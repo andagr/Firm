@@ -5,7 +5,7 @@ if "%1"=="init" goto init
 goto help
 
 :init
-.paket\paket.exe install
+.paket\paket.exe restore
 goto end
 
 :help
