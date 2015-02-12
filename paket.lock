@@ -1,0 +1,17 @@
+NUGET
+  remote: https://nuget.org/api/v2
+  specs:
+    FAKE (3.15.0)
+    FSharp.Compiler.Service (0.0.82)
+    FSharp.Data (2.1.1)
+      Zlib.Portable (>= 1.10.0)
+    FSharp.Formatting (2.7.4)
+      FSharp.Compiler.Service (>= 0.0.82)
+      FSharpVSPowerTools.Core (>= 1.7.0)
+    FSharpVSPowerTools.Core (1.7.0)
+      FSharp.Compiler.Service (>= 0.0.81)
+    Microsoft.AspNet.Razor (3.2.2) - >= net45
+    RazorEngine (3.5.3)
+      Microsoft.AspNet.Razor (>= 3.0.0) - >= net45
+      Microsoft.AspNet.Razor (2.0.30506.0) - >= net40 < net45
+    Zlib.Portable (1.10.0)

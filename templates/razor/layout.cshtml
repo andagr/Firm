@@ -1,0 +1,74 @@
+@using System.Linq
+
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Include Brain</title>
+    <meta name="description" content="Ramblings by a developer">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="alternate" type="application/rss+xml" title="Include Brain" href="//includebrain.com/blog/rss" />
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/fsharp.formatting/tooltips.css" />
+    <script type="text/javascript" src="/js/fsharp.formatting/tooltips.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Include Brain</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class=""><a href="/">Home</a></li>
+                    <li class=""><a href="/blog/about">About</a></li>
+                    <li class=""><a href="/blog/archives">Archives</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron">
+        <div class="container">
+            <h1><a href="/">Include Brain</a></h1>
+            <p>Ramblings by a developer</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div id="main-panel" class="col-md-8">
+                @RenderBody()
+            </div>
+            <div id="right-panel" class="col-md-4">
+                <h2>Recent posts</h2>
+                @foreach (var post in Model.AllPosts.Take(5))
+                {
+                    <h3><a href="/blog/@post.Url">@post.Title</a></h3>
+                    <small>post.Date</small>
+                }
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>This site is generated with <a href="https://github.com/andagr/Firm">Firm</a> and hosted on <a href="https://github.com/andagr/Firm">Github</a>.</p>
+        <p>By <a href="https://github.com/andagr">Andreas Ågren</a>.</p>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>
