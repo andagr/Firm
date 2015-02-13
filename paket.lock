@@ -10,7 +10,19 @@ NUGET
       FSharpVSPowerTools.Core (>= 1.7.0)
     FSharpVSPowerTools.Core (1.7.0)
       FSharp.Compiler.Service (>= 0.0.81)
-    Microsoft.AspNet.Razor (3.2.2) - >= net45
+    Microsoft.AspNet.Razor (3.2.3) - >= net45
+    Microsoft.Owin (3.0.0)
+      Owin (>= 1.0)
+    Microsoft.Owin.FileSystems (3.0.0)
+    Microsoft.Owin.Host.HttpListener (3.0.0)
+    Microsoft.Owin.Hosting (3.0.0)
+      Microsoft.Owin (>= 3.0.0)
+      Owin (>= 1.0)
+    Microsoft.Owin.StaticFiles (3.0.0)
+      Microsoft.Owin (>= 3.0.0)
+      Microsoft.Owin.FileSystems (>= 3.0.0)
+      Owin (>= 1.0)
+    Owin (1.0)
     RazorEngine (3.5.3)
       Microsoft.AspNet.Razor (>= 3.0.0) - >= net45
       Microsoft.AspNet.Razor (2.0.30506.0) - >= net40 < net45

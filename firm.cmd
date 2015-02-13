@@ -1,5 +1,7 @@
 @echo off
 
+pause
+
 if "%1"=="init" goto init
 
 goto help
