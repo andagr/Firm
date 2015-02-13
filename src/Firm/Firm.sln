@@ -5,6 +5,11 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Host", "Host\Host.fsproj", "{4F351876-95FD-4ECC-BD48-A50A87EB03AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03BDF667-8F3A-4C3B-9D5D-80D0318988F2}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\fake.fsx = ..\..\fake.fsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
