@@ -1,5 +1,5 @@
 @{
-    Layout = "layout.cshtml"
+    Layout = "_layout.cshtml"
 }
 
 @using RazorEngine.Templating
@@ -7,8 +7,8 @@
 
 <div class="post">
     <h1 class="post-title">@Model.Post.Title</h1>
-    <div class="post-author">@Model.Post.Date</div>
-    <div class="post-content">@Raw(Helpers.WriteHtml(Model.Post))</div>
+    <small>@Model.Post.Date</small>
+    <div class="post-content">@Raw(Model.Post)</div>
 </div>
 
 <div id="disqus_thread"></div>
@@ -18,7 +18,9 @@
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function () {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
