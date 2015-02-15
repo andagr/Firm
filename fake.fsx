@@ -1,9 +1,9 @@
-#I @"packages\FAKE\tools"
+#I "packages/FAKE/tools"
 #r "FakeLib.dll"
 
 open Fake
 
-let buildDir = @"bin\"
+let buildDir = "bin/"
 
 Target "Clean" (fun () -> 
     CleanDir buildDir
