@@ -12,20 +12,22 @@ module FileHelper =
         | Page of FileInfo
         | Resource of FileInfo
 
-    let dirName f =
-        Path.GetDirectoryName(f)
-
-    let fileExt f =
-        Path.GetExtension(f)
+    let (|Content|Resource|) (ext:string) =
+        match (ext.ToLowerInvariant()) with
+        | ".md" | ".html" -> Content
+        | _ -> Resource
 
     let (|Post|Page|Resource|) f =
-        match fileExt f with
-        | ".md" | ".html" when File.Exists((dirName f) @+ "meta.json") -> Post(FileInfo(f), FileInfo((dirName f) @+ "meta.json"))
-        | ".md" | ".html" -> Page(FileInfo(f))
-        | _ -> Resource(FileInfo(f))
+        let dirName = Path.GetDirectoryName(f)
+        let fileExt = Path.GetExtension(f)
+        match fileExt with
+        | Content when File.Exists(dirName @+ "meta.json") -> Post(FileInfo(f), FileInfo(dirName @+ "meta.json"))
+        | Content -> Page(FileInfo(f))
+        | Resource -> Resource(FileInfo(f))
 
     let listInputs root =
         Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+        |> Seq.where (fun f -> f <> "meta.json")
         |> Seq.map (function
                     | Post (f, m) -> Post(f, m)
                     | Page f -> Page(f)
