@@ -19,13 +19,12 @@ module FileHelper =
 
     let (|Post|Page|Resource|) f =
         let dirName = Path.GetDirectoryName(f)
-        let fileExt = Path.GetExtension(f)
-        match fileExt with
+        match Path.GetExtension(f) with
         | Content when File.Exists(dirName @+ "meta.json") -> Post(FileInfo(f), FileInfo(dirName @+ "meta.json"))
         | Content -> Page(FileInfo(f))
         | Resource -> Resource(FileInfo(f))
 
-    let listInputs root =
+    let inputs root =
         Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
         |> Seq.where (fun f -> f <> "meta.json")
         |> Seq.map (function
