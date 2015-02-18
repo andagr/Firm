@@ -28,15 +28,14 @@ module Files =
     let trimEndDirSep (path:string) =
         path.TrimEnd(dirSepChars)
 
-//    let relativePath (baseDir:string) (file:string) =
-//        let filePath = Path.GetDirectoryName(file)
-//        let fileDirs = filePath.Split(dirSepChars)
-//        let baseDirDirs = baseDir.Split(dirSepChars)
-//        for i in 0..(Array.length fileDirs) do
-//            
-//
-//    let copy (fromBaseDir:string) (toBaseDir:string) (file:string) =
-//        let fromBaseDir = fromBaseDir |> trimTrailingSlash
-//        let toBaseDir = toBaseDir |> trimTrailingSlash
-//        
-//        File.Copy(fromFile, toDir @+ Path.GetFileName(fromFile))
+    let relativePath (baseDir:string) (file:string) =
+        let fileDirs = file.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
+        let baseDirDirs = baseDir.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
+        let baseDirDirsLen = Array.length baseDirDirs
+        if Array.length fileDirs <= baseDirDirsLen || fileDirs.[..baseDirDirsLen - 1] <> baseDirDirs then
+            failwith "Base dir must be a prefix to file dir."
+        String.concat (string Path.DirectorySeparatorChar) fileDirs.[baseDirDirsLen..]
+        
+    let copy (fromBaseDir:string) (toBaseDir:string) (file:string) =
+        let relFilePath = relativePath fromBaseDir file
+        File.Copy(file, toBaseDir @+ relFilePath)
