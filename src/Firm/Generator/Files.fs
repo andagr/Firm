@@ -18,9 +18,9 @@ module Files =
         | _ -> Resource
 
     let (|Post|Page|Resource|) f =
-        let dirName = Path.GetDirectoryName(f)
+        let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match Path.GetExtension(f) with
-        | Content it when File.Exists(dirName @+ "meta.json") -> Post(f, dirName @+ "meta.json", it)
+        | Content it when File.Exists(meta) -> Post(f, meta, it)
         | Content it -> Page(f, it)
         | Resource -> Resource(f)
 
