@@ -7,17 +7,22 @@ module Files =
     let inline (@+) path1 path2 =
         Path.Combine(path1, path2)
 
+    type InputType =
+        | Md
+        | Html
+
     let (|Content|Resource|) (ext:string) =
         match (ext.ToLowerInvariant()) with
-        | ".md" | ".html" -> Content
+        | ".md" -> Content(Md)
+        | ".html" -> Content(Html)
         | _ -> Resource
 
     let (|Post|Page|Resource|) f =
         let dirName = Path.GetDirectoryName(f)
         match Path.GetExtension(f) with
-        | Content when File.Exists(dirName @+ "meta.json") -> Post(FileInfo(f), FileInfo(dirName @+ "meta.json"))
-        | Content -> Page(FileInfo(f))
-        | Resource -> Resource(FileInfo(f))
+        | Content it when File.Exists(dirName @+ "meta.json") -> Post(f, dirName @+ "meta.json", it)
+        | Content it -> Page(f, it)
+        | Resource -> Resource(f)
 
     let inputFiles root =
         Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)

@@ -3,24 +3,27 @@
 open Files
 
 module Transformation =
-    let processPost f m =
+    let processPost d f m it =
         ()
 
-    let processPage f =
+    let processPage d f it =
         ()
 
-    let processResource f =
-        ()
+    let processResource d f =
+        let fd, td = d
+        copy fd td f
 
-    let processInput input =
+    let processInput d input =
         match input with
-        | Post (f, m) -> processPost f m
-        | Page f -> processPage f
-        | Resource f -> processResource f
+        | Post (f, m, it) -> processPost d f m it
+        | Page (f, it) -> processPage d f it
+        | Resource f -> processResource d f
 
-    let processInputs inputs =
+    let processInputs d inputs =
         inputs
-        |> Seq.iter processInput
+        |> Seq.iter (fun i -> processInput d i)
 
     let generate fromDir toDir =
-        inputFiles >> processInputs
+        fromDir
+        |> inputFiles
+        |> processInputs (fromDir, toDir)
