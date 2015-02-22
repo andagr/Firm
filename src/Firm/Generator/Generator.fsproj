@@ -50,6 +50,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="Files.fs" />
+    <Compile Include="FirmRazor.fs" />
     <Compile Include="Transformation.fs" />
   </ItemGroup>
   <ItemGroup>
