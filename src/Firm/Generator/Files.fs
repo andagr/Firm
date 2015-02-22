@@ -42,5 +42,7 @@ module Files =
         String.concat (string Path.DirectorySeparatorChar) fileDirs.[baseDirDirsLen..]
         
     let copy (fromBaseDir:string) (toBaseDir:string) (file:string) =
-        let relFilePath = relativePath fromBaseDir file
-        File.Copy(file, toBaseDir @+ relFilePath)
+        let targetFile = toBaseDir @+ (relativePath fromBaseDir file)
+        if not (File.Exists(targetFile)) then
+            printfn "Copying %s to %s" file targetFile
+            File.Copy(file, targetFile)

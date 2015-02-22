@@ -1,6 +1,8 @@
 ﻿namespace Generator
 
+
 open Files
+open FirmRazor
 
 module Transformation =
     let processPost d f m it =
@@ -23,7 +25,9 @@ module Transformation =
         inputs
         |> Seq.iter (fun i -> processInput d i)
 
-    let generate fromDir toDir =
+    let generate root =
+        let fromDir = root @+ "input"
+        let toDir = root @+ "output"
         fromDir
         |> inputFiles
         |> processInputs (fromDir, toDir)
