@@ -185,7 +185,7 @@ Final Note
 I wrote this tool as an F# learning experience and I welcome any input on improvements on everything from the syntax to how this could be better modeled.
 
 
-  [1]: /Content/images/uploaded%5C650px-Banner.png
+  [1]: /blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp/img/650px-Banner.png
   [2]: http://tinytower.wikia.com/wiki/Tiny_Tower_Wiki
   [3]: http://www.nimblebit.com/
   [5]: http://fsharp.github.io/FSharp.Data/library/CsvProvider.html

@@ -61,7 +61,7 @@ Practicing
   [1]: http://stackoverflow.com/questions/1882692/c-sharp-constructor-execution-order
   [2]: http://en.wikipedia.org/wiki/Functional_programming#History
   [3]: http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html
-  [4]: /Content/images/uploaded%5Clogo.png
+  [4]: blog/post/learning-fsharp/logo.png
   [5]: http://fsharp.org
   [6]: http://www.tryfsharp.org
   [7]: http://fsharpforfunandprofit.com
@@ -77,7 +77,7 @@ Practicing
   [17]: http://blogs.msdn.com/b/dsyme/
   [18]: http://fsharp.org/about/learning.html
   [19]: http://www2.imm.dtu.dk/~mire/FSharpBook/
-  [20]: /Content/images/uploaded%5C9781107684065_200_functional-programming-using-f_haftad.jpg
+  [20]: /blog/post/learning-fsharp/9781107684065_200_functional-programming-using-f_haftad.jpg
   [21]: http://oredev.org
   [22]: http://www.dotnetrocks.com/
   [23]: http://projecteuler.net/
