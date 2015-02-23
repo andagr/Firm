@@ -3,8 +3,13 @@
 
 open Files
 open FirmRazor
+open Models
 
 module Transformation =
+    type Models =
+        { Latest: PostModel
+          All: PostModel list}
+
     let processPost d post =
         ()
 
