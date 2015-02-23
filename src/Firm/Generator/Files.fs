@@ -4,12 +4,24 @@ open System
 open System.IO
 
 module Files =
-    let inline (@+) path1 path2 =
+    let (@+) path1 path2 =
         Path.Combine(path1, path2)
 
     type InputType =
         | Md
         | Html
+
+    type Post =
+        { File: string
+          Meta: string
+          InputType: InputType }
+
+    type Page =
+        { File: string
+          InputType: InputType}
+
+    type Resource =
+        { File: string }
 
     let (|Content|Resource|) (ext:string) =
         match (ext.ToLowerInvariant()) with
@@ -20,9 +32,9 @@ module Files =
     let (|Post|Page|Resource|) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match Path.GetExtension(f) with
-        | Content it when File.Exists(meta) -> Post(f, meta, it)
-        | Content it -> Page(f, it)
-        | Resource -> Resource(f)
+        | Content it when File.Exists(meta) -> Post {File = f; Meta = meta; InputType = it}
+        | Content it -> Page {Page.File = f; InputType = it}
+        | Resource -> Resource {Resource.File = f}
 
     let inputFiles root =
         Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)

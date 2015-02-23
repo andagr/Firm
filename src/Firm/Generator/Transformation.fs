@@ -5,21 +5,21 @@ open Files
 open FirmRazor
 
 module Transformation =
-    let processPost d f m it =
+    let processPost d post =
         ()
 
-    let processPage d f it =
+    let processPage d page =
         ()
 
-    let processResource d f =
+    let processResource d resource =
         let fd, td = d
-        copy fd td f
+        copy fd td resource.File
 
     let processInput d input =
         match input with
-        | Post (f, m, it) -> processPost d f m it
-        | Page (f, it) -> processPage d f it
-        | Resource f -> processResource d f
+        | Post po -> processPost d po
+        | Page pa -> processPage d pa
+        | Resource r -> processResource d r
 
     let processInputs d inputs =
         inputs
