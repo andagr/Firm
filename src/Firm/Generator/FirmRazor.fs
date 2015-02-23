@@ -1,6 +1,7 @@
 ﻿namespace Generator
 
 open System.IO
+open Files
 open RazorEngine
 open RazorEngine.Templating
 
