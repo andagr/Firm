@@ -52,9 +52,16 @@ module Files =
         if Array.length fileDirs <= baseDirDirsLen || fileDirs.[..baseDirDirsLen - 1] <> baseDirDirs then
             failwith "Base dir must be a prefix to file dir."
         String.concat (string Path.DirectorySeparatorChar) fileDirs.[baseDirDirsLen..]
+
+    let targetFile fromBaseDir toBaseDir file =
+        toBaseDir @+ (relativePath fromBaseDir file)
         
     let copy (fromBaseDir:string) (toBaseDir:string) (file:string) =
-        let targetFile = toBaseDir @+ (relativePath fromBaseDir file)
-        if not (File.Exists(targetFile)) then
-            printfn "Copying %s to %s" file targetFile
-            File.Copy(file, targetFile)
+        let target = targetFile fromBaseDir toBaseDir file
+        if not (File.Exists(target)) then
+            printfn "Copying %s to %s" file target
+            File.Copy(file, target)
+
+    let contentName (file:string) =
+        let paths = file.Split(dirSepChars)
+        paths.[Array.length paths - 2]
