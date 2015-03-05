@@ -7,61 +7,54 @@ module Files =
     let (@+) path1 path2 =
         Path.Combine(path1, path2)
 
-    type InputType =
-        | Md
-        | Html
+    type FileData =
+        { Input: string
+          Output: string }
 
     type Post =
-        { File: string
-          Meta: string
-          InputType: InputType }
+        { File: FileData
+          Meta: FileData }
 
-    type Page =
-        { File: string
-          InputType: InputType}
+    type Input =
+        | Post of Post
+        | Page of FileData
+        | Resource of FileData
 
-    type Resource =
-        { File: string }
+    let private dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
 
-    let (|Content|Resource|) (ext:string) =
-        match (ext.ToLowerInvariant()) with
-        | ".md" -> Content(Md)
-        | ".html" -> Content(Html)
-        | _ -> Resource
-
-    let (|Post|Page|Resource|) f =
-        let meta = Path.GetDirectoryName(f) @+ "meta.json"
-        match Path.GetExtension(f) with
-        | Content it when File.Exists(meta) -> Post {File = f; Meta = meta; InputType = it}
-        | Content it -> Page {Page.File = f; InputType = it}
-        | Resource -> Resource {Resource.File = f}
-
-    let inputFiles root =
-        Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
-        |> Seq.where (fun f -> f <> "meta.json")
-
-    let dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
-
-    let trimEndDirSep (path:string) =
-        path.TrimEnd(dirSepChars)
-
-    let relativePath (baseDir:string) (file:string) =
+    let private relativePath (baseDir:string) (file:string) =
         let fileDirs = file.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
         let baseDirDirs = baseDir.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
         let baseDirDirsLen = Array.length baseDirDirs
-        if Array.length fileDirs <= baseDirDirsLen || fileDirs.[..baseDirDirsLen - 1] <> baseDirDirs then
-            failwith "Base dir must be a prefix to file dir."
+        if Array.length fileDirs <= baseDirDirsLen || fileDirs.[..baseDirDirsLen - 1] <> baseDirDirs
+            then failwith "Base dir must be a prefix to file dir."
         String.concat (string Path.DirectorySeparatorChar) fileDirs.[baseDirDirsLen..]
 
-    let targetFile fromBaseDir toBaseDir file =
-        toBaseDir @+ (relativePath fromBaseDir file)
-        
-    let copy (fromBaseDir:string) (toBaseDir:string) (file:string) =
-        let target = targetFile fromBaseDir toBaseDir file
-        if not (File.Exists(target)) then
-            printfn "Copying %s to %s" file target
-            File.Copy(file, target)
+    let private fileNames (inputDir, outputDir) file =
+        let outf = outputDir @+ (relativePath inputDir file)
+        let outfwoe = Path.GetFileNameWithoutExtension(outf)
+        let outfwe = outfwoe + ".html"
+        {Input = file; Output = outfwe}
 
-    let contentName (file:string) =
-        let paths = file.Split(dirSepChars)
-        paths.[Array.length paths - 2]
+    let private (|Content|Resource|) (f:string) =
+        match (Path.GetExtension(f.ToLowerInvariant())) with
+        | ".md" -> Content
+        | _ -> Resource
+
+    let private input (id, od) f =
+        let meta = Path.GetDirectoryName(f) @+ "meta.json"
+        match f with
+        | Content when File.Exists(meta) ->
+            let post = {File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)}
+            Post(post)
+        | Content -> Page(fileNames (id, od) f)
+        | Resource -> Resource(fileNames (id, od) f)
+
+    let unzip (posts, pages, resources) input =
+        (posts, pages, resources)
+
+    let inputFiles (inputDir, outputDir) =
+        Directory.EnumerateFiles(inputDir, "*", SearchOption.AllDirectories)
+        |> Seq.where (fun f -> f <> "meta.json")
+        |> Seq.map (fun f -> input (inputDir, outputDir) f)
+        |> Seq.fold unzip ([], [], [])

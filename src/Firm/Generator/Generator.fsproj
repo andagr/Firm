@@ -49,8 +49,8 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Models.fs" />
     <Compile Include="Files.fs" />
-    <Compile Include="ViewModels.fs" />
     <Compile Include="FirmRazor.fs" />
     <Compile Include="Transformation.fs" />
   </ItemGroup>

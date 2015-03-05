@@ -3,23 +3,22 @@
 open System.IO
 open Files
 open FirmRazor
-open ViewModels
+open Models
 open FSharp.Data
 open FSharp.Literate
 
 module Transformation =
     type Meta = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
-    let splitInputs fromDir =
+    let private unzipInputs inputs =
         let split allInputs input =
             let posts, pages, resources = allInputs
             match input with
             | Post po -> (po::posts, pages, resources)
             | Page pa -> (posts, pa::pages, resources)
             | Resource r -> (posts, pages, r::resources)
-        fromDir
-        |> inputFiles
-        |> Seq.fold split ([], [], [])
+        inputs
+        |> List.fold split ([], [], [])
 
     let postModels posts =
         let toModel (post:Post) =
@@ -52,8 +51,7 @@ module Transformation =
         //Todo: Process pages
 
     let generate root =
-        let fromDir = root @+ "input"
-        let toDir = root @+ "output"
-        fromDir
-        |> splitInputs
-        |> processInputs fromDir toDir
+        let id = root @+ "input"
+        let od = root @+ "output"
+        Files.inputFiles (id, od)
+        |> unzipInputs
