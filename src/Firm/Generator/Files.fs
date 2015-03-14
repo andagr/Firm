@@ -10,7 +10,7 @@ module Files =
 
     type PostFile =
         { File: FileData
-          Meta: FileData }
+          Meta: string }
 
     type PageFile =
         { File: FileData }
@@ -50,7 +50,7 @@ module Files =
     let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when fileExists meta -> PostFile({File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)})
+        | Content when fileExists meta -> PostFile({File = (fileNames (id, od) f); Meta = meta})
         | Content -> PageFile({PageFile.File = fileNames (id, od) f})
         | Resource -> ResourceFile({ResourceFile.File = fileNames (id, od) f})
 

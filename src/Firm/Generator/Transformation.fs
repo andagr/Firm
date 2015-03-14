@@ -24,7 +24,7 @@ module Transformation =
         let postModels =
             posts
             |> List.map (fun p ->
-                let meta = MetaReader.Load(p.Meta.Input)
+                let meta = MetaReader.Load(p.Meta)
                 let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input))
                 p, PostModel(meta.Title, meta.Date, meta.Tags, doc))
         postModels
