@@ -60,8 +60,9 @@ module Files =
         | PageFile p -> (posts, p::pages, resources)
         | InputFile.ResourceFile r -> (posts, pages, r::resources)
 
-    let inputFiles (inputDir, outputDir) =
-        Directory.EnumerateFiles(inputDir, "*", SearchOption.AllDirectories)
+    let inputFiles dirEnumerator (inputDir, outputDir) =
+        //Directory.EnumerateFiles(inputDir, "*", SearchOption.AllDirectories)
+        dirEnumerator inputDir
         |> Seq.where (fun f -> f <> "meta.json")
         |> Seq.map (fun f -> input (inputDir, outputDir) f)
         |> Seq.fold unzip ([], [], [])
