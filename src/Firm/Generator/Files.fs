@@ -71,4 +71,4 @@ module Files =
 
     let index outputDir =
         [ outputDir @+ "index.html"
-          outputDir @+ "blog" @+ "index.html"
+          outputDir @+ "blog" @+ "index.html" ]

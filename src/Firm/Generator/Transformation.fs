@@ -8,8 +8,11 @@ open FSharp.Data
 open FSharp.Literate
 
 module Transformation =
-    type Config = JsonProvider<"""{ "disqusShortname": "a-name" }""">
-    type Meta = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
+    type ConfigReader = JsonProvider<"""{ "disqusShortname": "a-name" }""">
+    type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
+
+    type Config =
+        { DisqusShortname: string }
 
     let private dirEnumerator id =
         Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
@@ -17,30 +20,27 @@ module Transformation =
     let private fileExists file =
         File.Exists(file)
 
-    let private config root =
-        Config.Load(root @+ "config.json")
-
-    let postModel (post:PostFile) =
-        let meta = Meta.Load(post.Meta.Input)
-        let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(post.File.Input))
-        PostModel(meta.Title, meta.Date, meta.Tags, doc)
-
     let processPosts config index archive (posts: PostFile list) =
-        let allPosts = posts |> List.map (fun p -> (p, postModel p))
-        allPosts |> List.iter Output.Razor.writePost
-        let allPostModels = allPosts |> List.map snd
-        Output.Razor.writeArchive allPostModels archive 
-        index |> List.iter (Output.Razor.writeIndex allPostModels)
+        let postModels =
+            posts
+            |> List.map (fun p ->
+                let meta = MetaReader.Load(p.Meta.Input)
+                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input))
+                p, PostModel(meta.Title, meta.Date, meta.Tags, doc))
+        postModels
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p)))
+        |> List.iter Output.Razor.writePost
+        let mPostModels = postModels |> List.map snd
+        Output.Razor.writeArchive mPostModels archive 
+        index |> List.iter (Output.Razor.writeIndex mPostModels)
 
     let processPages (pages: PageFile list) =
-        pages
-        |> List.iter Output.Razor.writePage
+        pages |> List.iter Output.Razor.writePage
 
     let processResources (resources: ResourceFile list) =
-        resources
-        |> List.iter Output.copyResource
+        resources |> List.iter Output.copyResource
 
-    let private processInputs index archive config (posts, pages, resources) =
+    let private processInputs config index archive (posts, pages, resources) =
         processPosts config index archive posts
         processPages pages
         processResources resources
@@ -49,4 +49,7 @@ module Transformation =
         let id = root @+ "input"
         let od = root @+ "output"
         Files.inputFiles dirEnumerator fileExists (id, od)
-        |> processInputs (config root) (Files.index od) (Files.archive od)
+        |> processInputs
+            {DisqusShortname = ConfigReader.Load(root @+ "config.json").DisqusShortname}
+            (Files.index od)
+            (Files.archive od)
