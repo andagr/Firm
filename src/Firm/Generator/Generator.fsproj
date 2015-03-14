@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="Models.fs" />
     <Compile Include="Files.fs" />
-    <Compile Include="FirmRazor.fs" />
+    <Compile Include="Output.fs" />
     <Compile Include="Transformation.fs" />
   </ItemGroup>
   <ItemGroup>

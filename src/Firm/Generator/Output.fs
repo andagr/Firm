@@ -40,24 +40,24 @@ module Output =
               tplInfo tplDir tplKeys.Archive ]
             |> List.iter compileTemplate
 
-        let writePost (postFile:PostFile, model:PostModel) =
-            if not (File.Exists(postFile.File.Output)) then
-                printfn "Compiling and writing post %s" postFile.File.Output
+        let writePost (file:PostFile, model:PostModel) =
+            if not (File.Exists(file.File.Output)) then
+                printfn "Compiling and writing post %s" file.File.Output
                 let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<PostModel>, model)
-                File.WriteAllText(postFile.File.Output, result)
+                File.WriteAllText(file.File.Output, result)
 
-        let writeArchive (archiveFile, model:IEnumerable<PostModel>) =
-            printfn "Compiling and writing archive %s" archiveFile
-            let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<IEnumerable<PostModel>>, model)
-            File.WriteAllText(archiveFile, result)
-
-        let writeIndex (indexFile, model:IEnumerable<PostModel>) =
-            printfn "Compiling and writing index %s" indexFile
+        let writeIndex (model:IEnumerable<PostModel>) file =
+            printfn "Compiling and writing index %s" file
             let result = Engine.Razor.RunCompile(tplKeys.Index, typeof<IEnumerable<PostModel>>, model)
-            File.WriteAllText(indexFile, result)
+            File.WriteAllText(file, result)
 
-        let writePage pageFile =
-            if not (File.Exists(pageFile.File.Output)) then
-                printfn "Compiling and writing page %s" pageFile.File.Output
+        let writeArchive (model:IEnumerable<PostModel>) file =
+            printfn "Compiling and writing archive %s" file
+            let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<IEnumerable<PostModel>>, model)
+            File.WriteAllText(file, result)
+
+        let writePage (file:PageFile) =
+            if not (File.Exists(file.File.Output)) then
+                printfn "Compiling and writing page %s" file.File.Output
                 let result = Engine.Razor.RunCompile(tplKeys.Page)
-                File.WriteAllText(pageFile.File.Output, result)
+                File.WriteAllText(file.File.Output, result)

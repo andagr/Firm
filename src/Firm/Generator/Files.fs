@@ -4,9 +4,6 @@ open System
 open System.IO
 
 module Files =
-    let (@+) path1 path2 =
-        Path.Combine(path1, path2)
-
     type FileData =
         { Input: string
           Output: string }
@@ -25,6 +22,9 @@ module Files =
         | PostFile of PostFile
         | PageFile of PageFile
         | ResourceFile of ResourceFile
+
+    let (@+) path1 path2 =
+        Path.Combine(path1, path2)
 
     let private dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
 
@@ -47,22 +47,28 @@ module Files =
         | ".md" -> Content
         | _ -> Resource
 
-    let private input (id, od) f =
+    let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when File.Exists(meta) -> PostFile({File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)})
+        | Content when fileExists meta -> PostFile({File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)})
         | Content -> PageFile({PageFile.File = fileNames (id, od) f})
         | Resource -> ResourceFile({ResourceFile.File = fileNames (id, od) f})
 
-    let unzip (posts, pages, resources) input =
+    let private unzip (posts, pages, resources) input =
         match input with
         | PostFile p -> (p::posts, pages, resources)
         | PageFile p -> (posts, p::pages, resources)
         | InputFile.ResourceFile r -> (posts, pages, r::resources)
 
-    let inputFiles dirEnumerator (inputDir, outputDir) =
-        //Directory.EnumerateFiles(inputDir, "*", SearchOption.AllDirectories)
+    let inputFiles dirEnumerator fileExists (inputDir, outputDir) =
         dirEnumerator inputDir
         |> Seq.where (fun f -> f <> "meta.json")
-        |> Seq.map (fun f -> input (inputDir, outputDir) f)
+        |> Seq.map (fun f -> input fileExists (inputDir, outputDir) f)
         |> Seq.fold unzip ([], [], [])
+
+    let archive outputDir =
+        outputDir @+ "blog" @+ "archive.html"
+
+    let index outputDir =
+        [ outputDir @+ "index.html"
+          outputDir @+ "blog" @+ "index.html"

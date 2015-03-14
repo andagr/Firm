@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 
-type PostModel(name: string, title: string, date: DateTime, tags: IEnumerable<string>, document: string) = 
+type PostModel(title: string, date: DateTime, tags: IEnumerable<string>, document: string) = 
     member t.Name = name
     member t.Title = title
     member t.Date = date
