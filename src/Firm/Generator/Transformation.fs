@@ -10,18 +10,8 @@ open FSharp.Literate
 module Transformation =
     type Meta = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
-    let private unzipInputs inputs =
-        let split allInputs input =
-            let posts, pages, resources = allInputs
-            match input with
-            | Post po -> (po::posts, pages, resources)
-            | Page pa -> (posts, pa::pages, resources)
-            | Resource r -> (posts, pages, r::resources)
-        inputs
-        |> List.fold split ([], [], [])
-
     let postModels posts =
-        let toModel (post:Post) =
+        let toModel (post:PostFile) =
             let name = contentName post.File
             let meta = Meta.Load(post.Meta)
             let doc =
@@ -31,11 +21,7 @@ module Transformation =
             (PostModel(name, meta.Title, meta.Date, meta.Tags, doc), post.File)
         posts |> List.map toModel
 
-    let processResources fd td (resources:Resource list) =
-        resources
-        |> List.iter (fun r -> copy fd td r.File)
-
-    let processPosts fd td (posts:Post list) =
+    let processPosts fd td (posts:PostFile list) =
         let all = postModels posts
         let latest, file = 
             all
@@ -45,13 +31,27 @@ module Transformation =
         writePost latest (targetFile fd td file)
         // Todo: Better handling of file / targetFile
 
-    let processInputs fd td (posts, pages, resources) =
-        processResources fd td resources
-        processPosts fd td posts
-        //Todo: Process pages
+    let processPosts (posts: PostFile list) =
+        ()
+
+    let processPages (pages: PageFile list) =
+        ()
+
+    let processResources (resources: ResourceFile list) =
+        resources
+        |> List.filter (fun r -> not (File.Exists(r.File.Output)))
+        |> List.iter 
+            (fun r ->
+                printf "Copy resource %s to %s" r.File.Input r.File.Output
+                File.Copy(r.File.Input, r.File.Output))
+
+    let private processInputs (posts, pages, resources) =
+        processPosts posts
+        processPages pages
+        processResources resources
 
     let generate root =
         let id = root @+ "input"
         let od = root @+ "output"
         Files.inputFiles (id, od)
-        |> unzipInputs
+        |> processInputs

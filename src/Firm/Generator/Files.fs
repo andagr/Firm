@@ -11,14 +11,20 @@ module Files =
         { Input: string
           Output: string }
 
-    type Post =
+    type PostFile =
         { File: FileData
           Meta: FileData }
 
-    type Input =
-        | Post of Post
-        | Page of FileData
-        | Resource of FileData
+    type PageFile =
+        { File: FileData }
+
+    type ResourceFile = 
+        { File: FileData }
+
+    type InputFile =
+        | PostFile of PostFile
+        | PageFile of PageFile
+        | ResourceFile of ResourceFile
 
     let private dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
 
@@ -44,14 +50,15 @@ module Files =
     let private input (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when File.Exists(meta) ->
-            let post = {File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)}
-            Post(post)
-        | Content -> Page(fileNames (id, od) f)
-        | Resource -> Resource(fileNames (id, od) f)
+        | Content when File.Exists(meta) -> PostFile({File = (fileNames (id, od) f); Meta = (fileNames (id, od) meta)})
+        | Content -> PageFile({PageFile.File = fileNames (id, od) f})
+        | Resource -> ResourceFile({ResourceFile.File = fileNames (id, od) f})
 
     let unzip (posts, pages, resources) input =
-        (posts, pages, resources)
+        match input with
+        | PostFile p -> (p::posts, pages, resources)
+        | PageFile p -> (posts, p::pages, resources)
+        | InputFile.ResourceFile r -> (posts, pages, r::resources)
 
     let inputFiles (inputDir, outputDir) =
         Directory.EnumerateFiles(inputDir, "*", SearchOption.AllDirectories)
