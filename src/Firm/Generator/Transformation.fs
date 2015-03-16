@@ -14,13 +14,13 @@ module Transformation =
     type Config =
         { DisqusShortname: string }
 
-    let private dirEnumerator id =
+    let dirEnumerator id =
         Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
 
-    let private fileExists file =
+    let fileExists file =
         File.Exists(file)
 
-    let processPosts config index archive (posts: PostFile list) =
+    let private processPosts config index archive (posts: PostFile list) =
         let postModels =
             posts
             |> List.map (fun p ->
@@ -34,10 +34,10 @@ module Transformation =
         Output.Razor.writeArchive mPostModels archive 
         index |> List.iter (Output.Razor.writeIndex mPostModels)
 
-    let processPages (pages: PageFile list) =
+    let private processPages (pages: PageFile list) =
         pages |> List.iter Output.Razor.writePage
 
-    let processResources (resources: ResourceFile list) =
+    let private processResources (resources: ResourceFile list) =
         resources |> List.iter Output.copyResource
 
     let private processInputs config index archive (posts, pages, resources) =

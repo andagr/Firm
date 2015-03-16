@@ -26,6 +26,10 @@ module Files =
     let (@+) path1 path2 =
         Path.Combine(path1, path2)
 
+    let (@.) file ext =
+        let fwoe = Path.GetDirectoryName(file) @+ Path.GetFileNameWithoutExtension(file)
+        fwoe + ext
+
     let private dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
 
     let private relativePath (baseDir:string) (file:string) =
@@ -36,11 +40,8 @@ module Files =
             then failwith "Base dir must be a prefix to file dir."
         String.concat (string Path.DirectorySeparatorChar) fileDirs.[baseDirDirsLen..]
 
-    let private fileNames (inputDir, outputDir) file =
-        let outf = outputDir @+ (relativePath inputDir file)
-        let outfwoe = Path.GetFileNameWithoutExtension(outf)
-        let outfwe = outfwoe + ".html"
-        {Input = file; Output = outfwe}
+    let private outFile (inputDir, outputDir) file =
+        outputDir @+ (relativePath inputDir file)
 
     let private (|Content|Resource|) (f:string) =
         match (Path.GetExtension(f.ToLowerInvariant())) with
@@ -50,9 +51,9 @@ module Files =
     let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when fileExists meta -> PostFile({File = (fileNames (id, od) f); Meta = meta})
-        | Content -> PageFile({PageFile.File = fileNames (id, od) f})
-        | Resource -> ResourceFile({ResourceFile.File = fileNames (id, od) f})
+        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = meta})
+        | Content -> PageFile({PageFile.File = {Input = f; Output = outFile (id, od) f @. ".html"}})
+        | Resource -> ResourceFile({ResourceFile.File = {Input = f; Output = outFile (id, od) f}})
 
     let private unzip (posts, pages, resources) input =
         match input with
