@@ -48,6 +48,7 @@ module Transformation =
     let generate root =
         let id = root @+ "input"
         let od = root @+ "output"
+        Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
             {DisqusShortname = ConfigReader.Load(root @+ "config.json").DisqusShortname}

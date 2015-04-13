@@ -1,13 +1,5 @@
-#load "src/Firm/Generator/Files.fs"
+#r "bin/Generator.dll"
 
-open System.IO
 open Generator
-open Files
 
-let dirEnumerator id=
-        Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
-
-let fileExists file =
-        File.Exists(file)
-
-Generator.Files.inputFiles dirEnumerator fileExists (__SOURCE_DIRECTORY__ @+ "input", __SOURCE_DIRECTORY__ @+ "output")
+Transformation.generate __SOURCE_DIRECTORY__

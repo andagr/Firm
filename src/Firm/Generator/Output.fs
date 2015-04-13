@@ -23,7 +23,7 @@ module Output =
         let tplKeys =
             { Post = "post.cshtml"
               Page = "page.cshtml"
-              Index = "index.csthml"
+              Index = "index.cshtml"
               Archive = "archive.cshtml" }
 
         let compileTemplates root =
