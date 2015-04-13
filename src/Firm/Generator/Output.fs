@@ -15,13 +15,15 @@ module Output =
 
     module Razor =
         type TplKeys =
-            { Post: string
+            { Layout: string
+              Post: string
               Page: string
               Index: string
               Archive: string }
 
         let tplKeys =
-            { Post = "post.cshtml"
+            { Layout = "_layout.cshtml"
+              Post = "post.cshtml"
               Page = "page.cshtml"
               Index = "index.cshtml"
               Archive = "archive.cshtml" }
@@ -34,7 +36,8 @@ module Output =
                 printfn "Compiling template %s..." name
                 Engine.Razor.AddTemplate(name, File.ReadAllText(tpl))
             let tplDir = root @+ "templates" @+ "razor"
-            [ tplInfo tplDir tplKeys.Post
+            [ tplInfo tplDir tplKeys.Layout
+              tplInfo tplDir tplKeys.Post
               tplInfo tplDir tplKeys.Page
               tplInfo tplDir tplKeys.Index
               tplInfo tplDir tplKeys.Archive ]
