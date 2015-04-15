@@ -1,20 +1,20 @@
 @{
-    Layout = "_layout.cshtml"
+    Layout = "_layout.cshtml";
 }
 
 @using RazorEngine.Templating
 
-@for(var post in @Model.Posts)
+@foreach(var post in Model.AllPosts)
 {
     <div class="post">
         <h1 class="post-title">@post.Title</h1>
-        <small>@post.Date - <div class="comment-count"><a href="/blog/post/@post.Url#disqus_thread">Click here to see comments</a></div></small>
+        <small>@post.Date - <div class="comment-count"><a href="/blog/@post.Name#disqus_thread">Click here to see comments</a></div></small>
     </div>
 }
 
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = '@Model.BlogName'; // required: replace example with your forum shortname
+    var disqus_shortname = '@Model.DisqusShortname'; // required: replace example with your forum shortname
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function () {
