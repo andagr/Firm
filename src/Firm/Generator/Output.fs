@@ -46,6 +46,7 @@ module Output =
         let writePost (file: PostFile, model: BlogModel) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing post %s" file.File.Output
+                Directory.CreateDirectory(file.File.Output) |> ignore
                 let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<BlogModel>, model)
                 File.WriteAllText(file.File.Output, result)
 
