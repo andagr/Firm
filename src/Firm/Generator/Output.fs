@@ -46,22 +46,25 @@ module Output =
         let writePost (file: PostFile, model: BlogModel) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing post %s" file.File.Output
-                Directory.CreateDirectory(file.File.Output) |> ignore
+                Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
                 let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<BlogModel>, model)
                 File.WriteAllText(file.File.Output, result)
 
         let writeIndex (model: IEnumerable<PostModel>) file =
             printfn "Compiling and writing index %s" file
+            Directory.CreateDirectory(Path.GetDirectoryName(file)) |> ignore
             let result = Engine.Razor.RunCompile(tplKeys.Index, typeof<IEnumerable<PostModel>>, model)
             File.WriteAllText(file, result)
 
         let writeArchive (model: IEnumerable<PostModel>) file =
             printfn "Compiling and writing archive %s" file
+            Directory.CreateDirectory(Path.GetDirectoryName(file)) |> ignore
             let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<IEnumerable<PostModel>>, model)
             File.WriteAllText(file, result)
 
         let writePage (file: PageFile) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing page %s" file.File.Output
+                Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
                 let result = Engine.Razor.RunCompile(tplKeys.Page)
                 File.WriteAllText(file.File.Output, result)
