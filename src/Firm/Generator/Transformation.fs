@@ -26,11 +26,11 @@ module Transformation =
             |> List.map (fun p ->
                 let meta = MetaReader.Load(p.Meta)
                 let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input))
-                p, PostModel(meta.Title, meta.Date, meta.Tags, doc))
-        postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p)))
-        |> List.iter Output.Razor.writePost
+                p, PostModel(p.Name, meta.Title, meta.Date, meta.Tags, doc))
         let mPostModels = postModels |> List.map snd
+        postModels
+        |> List.map (fun (pf, p) -> (pf, BlogModel(config.DisqusShortname, p, mPostModels)))
+        |> List.iter Output.Razor.writePost
         Output.Razor.writeArchive mPostModels archive 
         index |> List.iter (Output.Razor.writeIndex mPostModels)
 

@@ -43,10 +43,10 @@ module Output =
               tplInfo tplDir tplKeys.Archive ]
             |> List.iter compileTemplate
 
-        let writePost (file: PostFile, model: SinglePostModel) =
+        let writePost (file: PostFile, model: BlogModel) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing post %s" file.File.Output
-                let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<SinglePostModel>, model)
+                let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<BlogModel>, model)
                 File.WriteAllText(file.File.Output, result)
 
         let writeIndex (model: IEnumerable<PostModel>) file =

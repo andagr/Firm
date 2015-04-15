@@ -1,4 +1,4 @@
-@using System.Linq
+﻿@using System.Linq
 
 <!doctype html>
 <html class="no-js" lang="">
@@ -55,7 +55,7 @@
                 <h2>Recent posts</h2>
                 @foreach (var post in Model.AllPosts.Take(5))
                 {
-                    <h3><a href="/blog/@post.Url">@post.Title</a></h3>
+                    <h3><a href="/blog/@post.Name">@post.Title</a></h3>
                     <small>post.Date</small>
                 }
             </div>
@@ -63,7 +63,7 @@
     </div>
     <footer>
         <p>This site is generated with <a href="https://github.com/andagr/Firm">Firm</a> and hosted on <a href="https://github.com/andagr/Firm">Github</a>.</p>
-        <p>By <a href="https://github.com/andagr">Andreas �gren</a>.</p>
+        <p>By <a href="https://github.com/andagr">Andreas Ågren</a>.</p>
     </footer>
 
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>

@@ -10,7 +10,8 @@ module Files =
 
     type PostFile =
         { File: FileData
-          Meta: string }
+          Meta: string
+          Name: string }
 
     type PageFile =
         { File: FileData }
@@ -32,6 +33,11 @@ module Files =
 
     let private dirSepChars = [|Path.DirectorySeparatorChar; Path.AltDirectorySeparatorChar|]
 
+    let private postName (file: string) =
+        let dirName = Path.GetDirectoryName(file)
+        let dirNames = dirName.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
+        dirNames.[Array.length dirNames - 1]
+
     let private relativePath (baseDir:string) (file:string) =
         let fileDirs = file.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
         let baseDirDirs = baseDir.Split(dirSepChars, StringSplitOptions.RemoveEmptyEntries)
@@ -51,7 +57,7 @@ module Files =
     let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = meta})
+        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = meta; Name = postName f})
         | Content -> PageFile({PageFile.File = {Input = f; Output = outFile (id, od) f @. ".html"}})
         | Resource -> ResourceFile({ResourceFile.File = {Input = f; Output = outFile (id, od) f}})
 

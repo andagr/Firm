@@ -3,7 +3,8 @@
 open System
 open System.Collections.Generic
 
-type PostModel(title: string, date: DateTime, tags: IEnumerable<string>, document: string) =
+type PostModel(name: string, title: string, date: DateTime, tags: IEnumerable<string>, document: string) =
+    member t.Name = name
     member t.Title = title
     member t.Date = date
     member t.Tags = tags
@@ -13,10 +14,7 @@ type PostModel(title: string, date: DateTime, tags: IEnumerable<string>, documen
         let docBeginning = document.Substring(0, docLength) + "..."
         sprintf "Title: %s, Date: %A, Tags: %A, Document: %s" title date tags docBeginning
 
-type SinglePostModel(disqusShortname: string, post: PostModel) =
+type BlogModel(disqusShortname: string, post: PostModel, allPosts: IEnumerable<PostModel>) =
     member t.DisqusShortname = disqusShortname
     member t.Post = post
-
-type MultiplePostModel(disqusShortname: string, posts: IEnumerable<PostModel>) =
-    member t.DisqusShortname = disqusShortname
-    member t.Posts = posts
+    member t.AllPosts = allPosts
