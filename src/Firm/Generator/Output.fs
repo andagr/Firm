@@ -10,6 +10,7 @@ module Output =
     let copyResource resource =
         if not (File.Exists(resource.File.Output)) then
             printfn "Copying resource %s to %s" resource.File.Input resource.File.Output
+            Directory.CreateDirectory(Path.GetDirectoryName(resource.File.Output)) |> ignore
             File.Copy(resource.File.Input, resource.File.Output)
 
     module Razor =
