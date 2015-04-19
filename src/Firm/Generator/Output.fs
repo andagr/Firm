@@ -1,7 +1,6 @@
 ﻿namespace Generator
 
 open System.IO
-open System.Collections.Generic
 open Files
 open Models
 open RazorEngine
@@ -43,23 +42,23 @@ module Output =
               tplInfo tplDir tplKeys.Archive ]
             |> List.iter compileTemplate
 
-        let writePost (file: PostFile, model: BlogModel) =
+        let writePost (file: PostFile, model: SinglePostModel) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing post %s" file.File.Output
                 Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
-                let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<BlogModel>, model)
+                let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<SinglePostModel>, model)
                 File.WriteAllText(file.File.Output, result)
 
-        let writeIndex (model: IEnumerable<PostModel>) file =
+        let writeIndex (model: AllPostsModel) file =
             printfn "Compiling and writing index %s" file
             Directory.CreateDirectory(Path.GetDirectoryName(file)) |> ignore
-            let result = Engine.Razor.RunCompile(tplKeys.Index, typeof<IEnumerable<PostModel>>, model)
+            let result = Engine.Razor.RunCompile(tplKeys.Index, typeof<AllPostsModel>, model)
             File.WriteAllText(file, result)
 
-        let writeArchive (model: IEnumerable<PostModel>) file =
+        let writeArchive (model: AllPostsModel) file =
             printfn "Compiling and writing archive %s" file
             Directory.CreateDirectory(Path.GetDirectoryName(file)) |> ignore
-            let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<IEnumerable<PostModel>>, model)
+            let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<AllPostsModel>, model)
             File.WriteAllText(file, result)
 
         let writePage (file: PageFile) =

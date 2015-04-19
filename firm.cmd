@@ -42,7 +42,7 @@ echo Done!
 goto :end
 
 :generate
-if not exist bin call :build
+if not exist bin call :build build
 echo Generating site...
 bin\Generator.exe "%root%"
 goto :end

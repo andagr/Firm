@@ -2,7 +2,6 @@
 
 open System.IO
 open Files
-open Output
 open Models
 open FSharp.Data
 open FSharp.Literate
@@ -27,12 +26,13 @@ module Transformation =
                 let meta = MetaReader.Load(p.Meta)
                 let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input))
                 p, PostModel(p.Name, meta.Title, meta.Date, meta.Tags, doc))
-        let mPostModels = postModels |> List.map snd
+        let allPosts = postModels |> List.map snd
         postModels
-        |> List.map (fun (pf, p) -> (pf, BlogModel(config.DisqusShortname, p, mPostModels)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts)))
         |> List.iter Output.Razor.writePost
-        Output.Razor.writeArchive mPostModels archive 
-        index |> List.iter (Output.Razor.writeIndex mPostModels)
+        let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts)
+        Output.Razor.writeArchive allPostsModel archive 
+        index |> List.iter (Output.Razor.writeIndex allPostsModel)
 
     let private processPages (pages: PageFile list) =
         pages |> List.iter Output.Razor.writePage

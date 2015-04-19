@@ -14,7 +14,11 @@ type PostModel(name: string, title: string, date: DateTime, tags: IEnumerable<st
         let docBeginning = document.Substring(0, docLength) + "..."
         sprintf "Title: %s, Date: %A, Tags: %A, Document: %s" title date tags docBeginning
 
-type BlogModel(disqusShortname: string, post: PostModel, allPosts: IEnumerable<PostModel>) =
+type SinglePostModel(disqusShortname: string, post: PostModel, allPosts: IEnumerable<PostModel>) =
     member t.DisqusShortname = disqusShortname
     member t.Post = post
+    member t.AllPosts = allPosts
+
+type AllPostsModel(disqusShortname: string, allPosts: IEnumerable<PostModel>) =
+    member t.DisqusShortname = disqusShortname
     member t.AllPosts = allPosts
