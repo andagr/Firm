@@ -1,0 +1,16 @@
+@{
+    Layout = "_layout.cshtml";
+}
+
+@using RazorEngine.Templating
+@using Models
+
+@{
+    var latest = Model.AllPosts.First();
+}
+
+<div class="post">
+    <h1 class="post-title">@latest.Title</h1>
+    <small>@latest.Date</small>
+    <div class="post-content">@Raw(latest.Document)</div>
+</div>

@@ -22,10 +22,12 @@ module Transformation =
     let private processPosts config index archive (posts: PostFile list) =
         let postModels =
             posts
-            |> List.map (fun p ->
-                let meta = MetaReader.Load(p.Meta)
-                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input))
-                p, PostModel(p.Name, meta.Title, meta.Date, meta.Tags, doc))
+            |> List.map (fun pf ->
+                let meta = MetaReader.Load(pf.Meta)
+                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(pf.File.Input))
+                pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
+            |> List.sortBy (fun (pf, pm) -> pm.Date)
+            |> List.rev
         let allPosts = postModels |> List.map snd
         postModels
         |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts)))
