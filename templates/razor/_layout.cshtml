@@ -52,11 +52,11 @@
                 @RenderBody()
             </div>
             <div id="right-panel" class="col-md-4">
-                <h2>Recent posts</h2>
+                <h2>Latest posts</h2>
                 @foreach (var post in Model.AllPosts.Take(5))
                 {
                     <h3><a href="/blog/@post.Name">@post.Title</a></h3>
-                    <small>post.Date</small>
+                    <small>@post.Date</small>
                 }
             </div>
         </div>
