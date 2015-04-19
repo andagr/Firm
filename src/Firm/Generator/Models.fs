@@ -22,3 +22,8 @@ type SinglePostModel(disqusShortname: string, post: PostModel, allPosts: IEnumer
 type AllPostsModel(disqusShortname: string, allPosts: IEnumerable<PostModel>) =
     member t.DisqusShortname = disqusShortname
     member t.AllPosts = allPosts
+
+type PageModel(disqusShortName: string, document: string, allPosts: IEnumerable<PostModel>) =
+    member t.DisqusShortname = disqusShortName
+    member t.Document = document
+    member t.AllPosts = allPosts

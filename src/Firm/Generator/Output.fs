@@ -61,9 +61,9 @@ module Output =
             let result = Engine.Razor.RunCompile(tplKeys.Archive, typeof<AllPostsModel>, model)
             File.WriteAllText(file, result)
 
-        let writePage (file: PageFile) =
+        let writePage (file: PageFile, model: PageModel) =
             if not (File.Exists(file.File.Output)) then
                 printfn "Compiling and writing page %s" file.File.Output
                 Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
-                let result = Engine.Razor.RunCompile(tplKeys.Page)
+                let result = Engine.Razor.RunCompile(tplKeys.Page, typeof<PageModel>, model)
                 File.WriteAllText(file.File.Output, result)

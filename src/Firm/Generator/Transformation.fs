@@ -33,16 +33,23 @@ module Transformation =
         let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
+        allPosts
 
-    let private processPages (pages: PageFile list) =
-        pages |> List.iter Output.Razor.writePage
+    let private processPages config (pages: PageFile list) allPosts =
+        pages
+        |> List.map (fun p ->
+            (p, PageModel(
+                    config.DisqusShortname,
+                    Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input)),
+                    allPosts)))
+        |> List.iter Output.Razor.writePage
 
     let private processResources (resources: ResourceFile list) =
         resources |> List.iter Output.copyResource
 
     let private processInputs config index archive (posts, pages, resources) =
-        processPosts config index archive posts
-        processPages pages
+        let allPosts = processPosts config index archive posts
+        processPages config pages allPosts
         processResources resources
 
     let generate root =
