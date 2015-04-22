@@ -2,7 +2,7 @@
 
 html, body {
     height: 100%;
-    background-image: url('/blog/img/broken_noise.png');
+    background-image: url('/img/broken_noise.png');
 }
 
 body {
@@ -11,7 +11,6 @@ body {
     font-weight: 100;
     color: #ddd;
     background-color: #222;
-    margin: 0;
     line-height: normal;
 }
 
@@ -41,6 +40,11 @@ header, footer, nav, section {
     display: block;
 }
 
+footer {
+    background-color: black;
+    padding: 50px 50px 50px 50px;
+}
+
 pre {
     color: inherit;
     background-color: black;
@@ -67,133 +71,6 @@ a:hover {
     text-decoration: none;
 }
 
-
-/* Styles for basic forms
------------------------------------------------------------*/
-fieldset {
-    border: 0;
-    padding: 0;
-    margin: 10px 0 10px 0;
-}
-
-legend {
-    font-size: 1.2em;
-    font-weight: lighter;
-    font-family: 'Roboto Slab', serif;
-    display: inherit;
-    width: inherit;
-    padding: 20px 0;
-    margin: 0;
-    line-height: inherit;
-    color: inherit;
-    border: 0;
-}
-
-input {
-    vertical-align: inherit;
-    width: 100%;
-    font-family: 'Roboto Slab', serif;
-}
-
-textarea {
-    min-height: 75px;
-    width: 100%;
-    font-family: 'Segoe UI Light', Verdana, Helvetica, Sans-Serif;
-    font-size: 19px;
-}
-
-label {
-    font-family: 'Roboto Slab', serif;
-}
-
-blockquote {
-    background: inherit;
-}
-
-.editor-label {
-    margin: 1em 0 0 0;
-}
-
-.editor-field {
-    margin: 0.5em 0 0 0;
-}
-
-fieldset.register label {
-    display: inline-block;
-    text-align: right;
-    width: 145px;
-    font-size: inherit;
-    margin-right: 5px;
-}
-
-fieldset.register ul {
-    list-style-type: none;
-}
-
-/* Styles for specific forms
------------------------------------------------------------*/
-#add-post .editor-field {
-    margin: 0;
-    padding: 0;
-}
-
-.wmd-panel {
-    margin: 0;
-    width: 100%;
-}
-
-#wmd-input {
-    height: 400px;
-    background-color: white;
-    border: 0;
-}
-
-#wmd-preview {
-    background-color: inherit;
-}
-
-
-div.account label {
-    display: inline-block;
-    font-size: inherit;
-    margin-right: 5px;
-}
-
-div.account ul {
-    list-style-type: none;
-}
-
-div.account {
-    max-width: 400px;
-}
-
-
-
-
-/* Styles for validation helpers
------------------------------------------------------------*/
-.field-validation-error {
-    color: #f00;
-}
-
-.field-validation-valid {
-    display: none;
-}
-
-.input-validation-error {
-    border: 1px solid #f00;
-    background-color: #fee;
-}
-
-.validation-summary-errors {
-    font-weight: bold;
-    color: #f00;
-}
-
-.validation-summary-valid {
-    display: none;
-}
-
 #netext-brand {
     display: none;
     font-weight: bold;
@@ -208,10 +85,7 @@ div.account {
 #topsection {
     color: white;
     background-color: #5757DA;
-    min-height: 175px;
-    padding: 20px 25px;
-    margin-bottom: 10px;
-    background-image: url('/blog/img/pinstriped_suit_blue2.jpg');
+    background-image: url('/img/pinstriped_suit_blue2.jpg');
 }
 
     #topsection h1 {
@@ -307,4 +181,9 @@ a.tag-selected {
 
 #about-contact {
     list-style-type: none;
+}
+
+/*-- FSharp.Formatting fixes --*/
+table.pre {
+    border: none;
 }
