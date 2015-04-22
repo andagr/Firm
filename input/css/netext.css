@@ -6,6 +6,7 @@ html, body {
 }
 
 body {
+    margin-top: 50px;
     font-size: 19px;
     font-family: 'Segoe UI Light', Verdana, Helvetica, Sans-Serif;
     font-weight: 100;
