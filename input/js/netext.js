@@ -1,7 +1,7 @@
 ﻿$( document ).ready( function() {
-    tagCloud.setSize();
+    prePrettifyer.setup();
+    //tagCloud.setSize();
     //tagCloud.enableMultiTags();
-    //prePrettifyer.setup();
 } );
 
 ( function( tagCloud, $, undefined ) {
@@ -84,7 +84,6 @@
 
 ( function( prePrettifyer, $, undefined ) {
     prePrettifyer.setup = function() {
-        $( "code" ).addClass( "prettyprint" );
-        $( "pre code" ).addClass( "linenums" );
+        $( 'table.pre' ).wrap('<div class="code-wrapper"></div>');
     };
 }( prePrettifyer = window.prePrettifyer || {}, jQuery ) );

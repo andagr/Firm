@@ -1,4 +1,4 @@
-﻿@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans:300|Roboto+Slab);
 
 html, body {
     height: 100%;
@@ -7,9 +7,9 @@ html, body {
 
 body {
     margin-top: 50px;
-    font-size: 19px;
-    font-family: 'Segoe UI Light', Verdana, Helvetica, Sans-Serif;
-    font-weight: 100;
+    font-size: 18px;
+    font-family: 'Open Sans', 'Segoe UI Light', Verdana, Helvetica, Sans-Serif;
+    font-weight: 300;
     color: #ddd;
     background-color: #222;
     line-height: normal;
@@ -63,10 +63,6 @@ code {
 ol {
     margin-left: 30px;
 }
-
-/*ul {
-    margin: 0 0 10px 10px;
-}*/
 
 a:hover {
     text-decoration: none;
@@ -187,4 +183,19 @@ a.tag-selected {
 /*-- FSharp.Formatting fixes --*/
 table.pre {
     border: none;
+    margin: 0;
+    border-radius: 0;
+    width: 100%
+}
+
+pre.fssnip {
+    font: 14px 'Droid Sans Mono', consolas, monospace
+}
+
+table.pre td.lines {
+    text-align: right;
+}
+
+div.code-wrapper {
+    overflow-x: auto;
 }
