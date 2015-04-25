@@ -198,4 +198,5 @@ table.pre td.lines {
 
 div.code-wrapper {
     overflow-x: auto;
+    margin-bottom: 10px;
 }
