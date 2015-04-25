@@ -13,7 +13,7 @@ function findPos(obj) {
         return [obj.offsetLeft + 10, obj.offsetTop + 30];
         
     var rect = obj.getBoundingClientRect();
-    return [Math.round(rect.left), Math.round(rect.top)];
+    return [Math.round(rect.left), Math.round(rect.top) + 20];
 }
 
 function hideUsingEsc(e) {
