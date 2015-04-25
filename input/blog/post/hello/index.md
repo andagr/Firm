@@ -12,7 +12,7 @@ We were at [Dreamhack][2] and, possibly after I got my ass handed to me in Quake
 Being perfectly reasonable, my brother printed this on a cap:
 ![Include brain cap][3]
 
-<br /> If you would like to get in touch with me, there are a number of options on the [About][4] page.
+If you would like to get in touch with me, there are a number of options on the [About][4] page.
 
 I hope you will enjoy my writings!
 
