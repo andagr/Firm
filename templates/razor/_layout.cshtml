@@ -55,7 +55,7 @@
                 <h2>Latest posts</h2>
                 @foreach (var post in Model.AllPosts.Take(5))
                 {
-                    <h3><a href="/blog/@post.Name">@post.Title</a></h3>
+                    <h3><a href="/blog/post/@post.Name">@post.Title</a></h3>
                     <small>@post.Date</small>
                 }
             </div>
