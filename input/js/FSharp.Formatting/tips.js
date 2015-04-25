@@ -11,15 +11,9 @@ function findPos(obj) {
     // no idea why, but it behaves differently in webbrowser component
     if (window.location.search == "?inapp")
         return [obj.offsetLeft + 10, obj.offsetTop + 30];
-
-    var curleft = 0;
-    var curtop = obj.offsetHeight;
-    while (obj) {
-        curleft += obj.offsetLeft;
-        curtop += obj.offsetTop;
-        obj = obj.offsetParent;
-    };
-    return [curleft, curtop];
+        
+    var rect = obj.getBoundingClientRect();
+    return [Math.round(rect.left), Math.round(rect.top)];
 }
 
 function hideUsingEsc(e) {
@@ -38,8 +32,7 @@ function showTip(evt, name, unique, owner) {
     var posy = pos[1];
 
     var el = document.getElementById(name);
-    var parent = (document.documentElement == null) ? document.body : document.documentElement;
-    el.style.position = "absolute";
+    el.style.position = "fixed";
     el.style.left = posx + "px";
     el.style.top = posy + "px";
     el.style.display = "block";
