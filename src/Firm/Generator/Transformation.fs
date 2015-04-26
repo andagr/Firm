@@ -19,6 +19,12 @@ module Transformation =
     let fileExists file =
         File.Exists(file)
 
+    let private getTagCloud (allPosts: PostModel list) =
+        allPosts
+        |> Seq.collect (fun pm -> pm.Tags)
+        |> Seq.groupBy (fun t -> t)
+        |> Seq.map (fun (t, ts) -> TagCloudModel(t, Seq.length ts))
+
     let private processPosts config index archive (posts: PostFile list) =
         let postModels =
             posts
@@ -29,29 +35,31 @@ module Transformation =
             |> List.sortBy (fun (pf, pm) -> pm.Date)
             |> List.rev
         let allPosts = postModels |> List.map snd
+        let tagCloud = getTagCloud allPosts
         postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts, tagCloud)))
         |> List.iter Output.Razor.writePost
-        let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts)
+        let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
-        allPosts
+        (allPosts, tagCloud)
 
-    let private processPages config (pages: PageFile list) allPosts =
+    let private processPages config (pages: PageFile list) (allPosts, tagCloud) =
         pages
         |> List.map (fun p ->
             (p, PageModel(
                     config.DisqusShortname,
                     Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input)),
-                    allPosts)))
+                    allPosts,
+                    tagCloud)))
         |> List.iter Output.Razor.writePage
 
     let private processResources (resources: ResourceFile list) =
         resources |> List.iter Output.copyResource
 
     let private processInputs config index archive (posts, pages, resources) =
-        let allPosts = processPosts config index archive posts
-        processPages config pages allPosts
+        let allPostsData = processPosts config index archive posts
+        processPages config pages allPostsData
         processResources resources
 
     let generate root =
