@@ -35,7 +35,7 @@
                 <ul class="nav navbar-nav">
                     <li class=""><a href="/">Home</a></li>
                     <li class=""><a href="/blog/about">About</a></li>
-                    <li class=""><a href="/blog/archives">Archives</a></li>
+                    <li class=""><a href="/blog/archive">Archive</a></li>
                 </ul>
             </div>
         </div>
@@ -63,7 +63,7 @@
                     @foreach (var post in Model.AllPosts.Take(5))
                     {
                         <h4>
-                            <a href="/blog/post/@post.Name">@post.Title</a>
+                            <a href="/blog/post/@post.Name/">@post.Title</a>
                             <br/>
                             <small>@post.Date</small>
                         </h4>

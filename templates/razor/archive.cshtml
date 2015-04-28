@@ -7,9 +7,13 @@
 @foreach(var post in Model.AllPosts)
 {
     <div class="post">
-        <h1 class="post-title">@post.Title</h1>
-        <small>@post.Date - <div class="comment-count"><a href="/blog/post/@post.Name#disqus_thread">Click here to see comments</a></div></small>
+        <h1 class="post-title">
+            <a href="/blog/post/@post.Name">@post.Title</a>
+            <br/>
+            <small>@post.Date</small>
+        </h1>
     </div>
+    <div class="comment-count"><a href="/blog/post/@post.Name/#disqus_thread">Click here to see comments</a></div>
 }
 
 <script type="text/javascript">

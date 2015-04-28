@@ -157,8 +157,8 @@ a.tag-selected {
 
 .comment-count {
     font-style: italic;
-    font-size: 12px;
-    margin-top: -150px;
+    font-size: 0.8em;
+    margin-top: -200px;
     margin-bottom: 200px;
 }
 

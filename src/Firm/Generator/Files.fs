@@ -74,7 +74,7 @@ module Files =
         |> Seq.fold unzip ([], [], [])
 
     let archive outputDir =
-        outputDir @+ "blog" @+ "archive.html"
+        outputDir @+ "blog" @+ "archive" @+ "index.html"
 
     let index outputDir =
         [ outputDir @+ "index.html"
