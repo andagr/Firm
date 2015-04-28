@@ -24,7 +24,13 @@
                     if (postTags.split(",").every(function(el) { return el != tag })) {
                         $this.hide();
                     }
-                })
+                });
+                $( 'a.tag' ).each(function() {
+                    var $this = $(this);
+                    if ($this.html() == tag) {
+                        $this.removeClass("tag-unselected").addClass("tag-selected");
+                    }
+                });
             }
         }
     }
