@@ -55,7 +55,7 @@
                 <div id="tag-cloud">
                     @foreach (var tag in Model.Tags)
                     {
-                        <a class="tag tag-unselected" data-postcount="@tag.Count" href="/blog/archive?tag=@tag.Name">@tag.Name</a>
+                        <a class="tag tag-unselected" data-postcount="@tag.Count" href="/blog/archive?tag=@Uri.EscapeDataString(tag.Name)">@tag.Name</a>
                     }
                 </div>
                 <div id="latest-posts">

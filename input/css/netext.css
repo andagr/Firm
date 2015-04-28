@@ -162,6 +162,11 @@ a.tag-selected {
     margin-bottom: 200px;
 }
 
+.post > .comment-count {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 #comments {
     font-size: 15px;
 }

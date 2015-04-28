@@ -6,14 +6,14 @@
 
 @foreach(var post in Model.AllPosts)
 {
-    <div class="post">
+    <div class="post" data-tags='@String.Join(",", post.Tags)'>
         <h1 class="post-title">
             <a href="/blog/post/@post.Name">@post.Title</a>
             <br/>
             <small>@post.Date</small>
         </h1>
+        <div class="comment-count"><a href="/blog/post/@post.Name/#disqus_thread">Click here to see comments</a></div>
     </div>
-    <div class="comment-count"><a href="/blog/post/@post.Name/#disqus_thread">Click here to see comments</a></div>
 }
 
 <script type="text/javascript">
