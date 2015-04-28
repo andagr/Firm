@@ -205,3 +205,7 @@ div.code-wrapper {
     overflow-x: auto;
     margin-bottom: 10px;
 }
+
+div#disqus_thread {
+    margin-bottom: 100px;
+}
