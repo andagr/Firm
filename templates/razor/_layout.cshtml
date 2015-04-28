@@ -52,12 +52,23 @@
                 @RenderBody()
             </div>
             <div id="right-panel" class="col-md-4">
-                <h2>Latest posts</h2>
-                @foreach (var post in Model.AllPosts.Take(5))
-                {
-                    <h3><a href="/blog/post/@post.Name">@post.Title</a></h3>
-                    <small>@post.Date</small>
-                }
+                <div id="tag-cloud">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <a class="tag tag-unselected" data-postcount="@tag.Count" href="/blog/archive?tag=@tag.Name">@tag.Name</a>
+                    }
+                </div>
+                <div id="latest-posts">
+                    <h3>Latest posts</h3>
+                    @foreach (var post in Model.AllPosts.Take(5))
+                    {
+                        <h4>
+                            <a href="/blog/post/@post.Name">@post.Title</a>
+                            <br/>
+                            <small>@post.Date</small>
+                        </h4>
+                    }
+                </div>
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@ module Transformation =
         allPosts
         |> Seq.collect (fun pm -> pm.Tags)
         |> Seq.groupBy (fun t -> t)
-        |> Seq.map (fun (t, ts) -> TagCloudModel(t, Seq.length ts))
+        |> Seq.map (fun (t, ts) -> TagModel(t, Seq.length ts))
 
     let private processPosts config index archive (posts: PostFile list) =
         let postModels =

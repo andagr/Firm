@@ -18,7 +18,7 @@ body {
 h1 {
     font-family: 'Roboto Slab', serif;
     font-weight: lighter;
-    font-size: 1.8em;
+    font-size: 2.5em;
     margin: 35px 0 0 0;
     line-height: normal;
 }
@@ -26,7 +26,7 @@ h1 {
 h2 {
     font-family: 'Roboto Slab', serif;
     font-weight: lighter;
-    font-size: 1.5em;
+    font-size: 2em;
     margin: 35px 0 0 0;
 }
 
@@ -34,7 +34,7 @@ h3 {
     font-family: 'Roboto Slab', serif;
     font-weight: lighter;
     margin: 35px 0 0 0;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 
 header, footer, nav, section {
@@ -91,10 +91,20 @@ a:hover {
         font-family: 'Roboto Slab', serif;
         line-height: 100px;
     }
+    
+#tag-cloud {
+    float: left;
+    margin-bottom: 50px;
+}
+    
+#latest-posts {
+    clear: left;
+}
 
-#mainsection {
-    height: 100%;
-    margin-bottom: 170px;
+#footer {
+    background-color: #252541;
+    min-height: 150px;
+    margin-top: -150px;
 }
 
 .post {
@@ -144,16 +154,6 @@ a.tag-selected {
         background-color: black;
         color: #11C1DA;
     }
-
-#footer {
-    background-color: #252541;
-    min-height: 150px;
-    margin-top: -150px;
-}
-
-.post-author {
-    margin-bottom: 40px;
-}
 
 .comment-count {
     font-style: italic;
