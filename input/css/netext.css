@@ -130,9 +130,6 @@ a.tag {
     float: left;
     padding: 5px;
     margin: 2px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
 }
 
 a.tag-unselected {
