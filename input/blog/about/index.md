@@ -1,16 +1,19 @@
-﻿### Hello,
+﻿# Hello,
 
 My name is Andreas Ågren and I'm a developer from Malmö in south Sweden, where I live with my wife and son.
 
-I work at [Apptus Technologies AB](http://www.apptus.com) with integration. My day-to-day technologies are C#, SQL Server, ASP.NET and Java.
+I work at [Apptus Technologies AB](http://www.apptus.com) with web development, API:s and integration.
+By day I mostly work with C#, Javascript, Java, AngularJS, ASP.NET and SQL Server. By night I'm currently learning F#.
 
 I am very passionate about software development and I love learning, reading about and practicing it.
 
-### Contact
+# Contact
 There are a couple of different ways to contact me:
 
-* [![Email](/img/icon-mail.png) andreas@includebrain.com](mailto:andreas@includebrain.com)
-* [![Twitter](/img/icon-twitter.png) Twitter](https://twitter.com/andreas_agren)
-* [![Google Plus](/img/icon-gplus.png) Google Plus](https://plus.google.com/u/0/109695501235230835745)
-* [![Facebook](/img/icon-facebook.png) Facebook](https://www.facebook.com/andreas.agren78)
-* [![LinkedIn](/img/icon-linkedin.png) LinkedIn](http://se.linkedin.com/in/andreasagren/)
+<div id="contact-images">
+    <a href="mailto:andreas@includebrain.com" alt="Email"><img src="/img/Mail.png"></a>
+    <a href="https://github.com/andagr" alt="Github"><img src="/img/Github.png"></a>
+    <a href="https://twitter.com/andreas_agren" alt="Twitter"><img src="/img/Twitter alt 2.png"></a>
+    <a href="https://www.linkedin.com/in/andreasagren" alt="LinkedIn"><img src="/img/Linked in alt.png"></a>
+</div>
+<small id="contact-images-credit">Icons from <a href="http://dakirby309.deviantart.com/art/Metro-UI-Icon-Set-725-Icons-280724102">Metro UI Icon Set</a></small>

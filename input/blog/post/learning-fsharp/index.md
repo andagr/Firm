@@ -33,7 +33,7 @@ These are blogs, related to F#, that I try to read as often as possible, in no p
 
 Books
 -----
-There are several [book suggestions on fsharp.org][18], but the one I got and plan to read is [Functional Programming using F#][19].
+There are several [book suggestions on fsharp.org][18], and the one I got and am reading is [Functional Programming using F#][19].
 
 ![Functional Programming using F#][20]
 
@@ -61,7 +61,7 @@ Practicing
   [1]: http://stackoverflow.com/questions/1882692/c-sharp-constructor-execution-order
   [2]: http://en.wikipedia.org/wiki/Functional_programming#History
   [3]: http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html
-  [4]: /blog/post/learning-fsharp/img/logo.png
+  [4]: /blog/post/learning-fsharp/img/fsharp128.png
   [5]: http://fsharp.org
   [6]: http://www.tryfsharp.org
   [7]: http://fsharpforfunandprofit.com

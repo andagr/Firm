@@ -178,9 +178,21 @@ a.tag-selected {
     margin-bottom: 50px;
 }
 
-#about-contact {
-    list-style-type: none;
+#contact-images img {
+    width: 100px;
+    height: 100px;
+    margin-right: 5px;
+    margin-bottom: 10px;
 }
+
+#contact-images-credit {
+    font-size: 0.5em;
+    color: #777;
+}
+
+    #contact-images-credit > a, #contact-images-credit > a:hover {
+        color: #777;
+    }
 
 /*-- FSharp.Formatting fixes --*/
 table.pre {
