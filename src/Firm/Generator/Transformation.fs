@@ -7,11 +7,12 @@ open FSharp.Data
 open FSharp.Literate
 
 module Transformation =
-    type ConfigReader = JsonProvider<"""{ "disqusShortname": "a-name" }""">
+    type ConfigReader = JsonProvider<"""{ "urlRoot": "/Firm", "disqusShortname": "a-name" }""">
     type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
     type Config =
-        { DisqusShortname: string }
+        { UrlRoot: string
+          DisqusShortname: string }
 
     let dirEnumerator id =
         Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
@@ -32,14 +33,14 @@ module Transformation =
                 let meta = MetaReader.Load(pf.Meta)
                 let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(pf.File.Input))
                 pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
-            |> List.sortBy (fun (pf, pm) -> pm.Date)
+            |> List.sortBy (fun (_, pm) -> pm.Date)
             |> List.rev
         let allPosts = postModels |> List.map snd
         let tagCloud = getTagCloud allPosts
         postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts, tagCloud)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.UrlRoot, config.DisqusShortname, p, allPosts, tagCloud)))
         |> List.iter Output.Razor.writePost
-        let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts, tagCloud)
+        let allPostsModel = AllPostsModel(config.UrlRoot, config.DisqusShortname, allPosts, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
         (allPosts, tagCloud)
@@ -48,6 +49,7 @@ module Transformation =
         pages
         |> List.map (fun p ->
             (p, PageModel(
+                    config.UrlRoot,
                     config.DisqusShortname,
                     Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input)),
                     allPosts,
@@ -63,11 +65,12 @@ module Transformation =
         processResources resources
 
     let generate root =
+        let config = ConfigReader.Load(root @+ "config.json")
         let id = root @+ "input"
         let od = root @+ "output"
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
-            {DisqusShortname = ConfigReader.Load(root @+ "config.json").DisqusShortname}
+            {UrlRoot = config.UrlRoot; DisqusShortname = config.DisqusShortname}
             (Files.index od)
             (Files.archive od)
