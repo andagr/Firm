@@ -8,11 +8,11 @@
 {
     <div class="post" data-tags='@String.Join(",", post.Tags)'>
         <h1 class="post-title">
-            <a href='@Model.LocalUrl("/blog/post")/@post.Name'>@post.Title</a>
+            <a href="/blog/post/@post.Name">@post.Title</a>
             <br/>
             <small>@post.Date</small>
         </h1>
-        <div class="comment-count"><a href='@Model.LocalUrl("/blog/post")/@post.Name/#disqus_thread'>Click here to see comments</a></div>
+        <div class="comment-count"><a href="/blog/post/@post.Name/#disqus_thread">Click here to see comments</a></div>
     </div>
 }
 
