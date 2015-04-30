@@ -7,11 +7,12 @@ open FSharp.Data
 open FSharp.Literate
 
 module Transformation =
-    type ConfigReader = JsonProvider<"""{ "disqusShortname": "a-name" }""">
+    type ConfigReader = JsonProvider<"""{ "baseURI": "http://localhost:8080/", "disqusShortname": "a-name" }""">
     type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
     type Config =
-        { DisqusShortname: string }
+        { BaseURI: string option
+          DisqusShortname: string }
 
     let dirEnumerator id =
         Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
@@ -37,9 +38,9 @@ module Transformation =
         let allPosts = postModels |> List.map snd
         let tagCloud = getTagCloud allPosts
         postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.DisqusShortname, p, allPosts, tagCloud)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.BaseURI, config.DisqusShortname, p, allPosts, tagCloud)))
         |> List.iter Output.Razor.writePost
-        let allPostsModel = AllPostsModel(config.DisqusShortname, allPosts, tagCloud)
+        let allPostsModel = AllPostsModel(config.BaseURI, config.DisqusShortname, allPosts, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
         (allPosts, tagCloud)
@@ -48,6 +49,7 @@ module Transformation =
         pages
         |> List.map (fun p ->
             (p, PageModel(
+                    config.BaseURI,
                     config.DisqusShortname,
                     Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input)),
                     allPosts,
@@ -63,11 +65,16 @@ module Transformation =
         processResources resources
 
     let generate root =
+        let config = ConfigReader.Load(root @+ "config.json")
+        let baseUri =
+            match config.BaseUri with
+            | "" | null -> None
+            | bu -> Some bu
         let id = root @+ "input"
         let od = root @+ "output"
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
-            {DisqusShortname = ConfigReader.Load(root @+ "config.json").DisqusShortname}
+            {BaseURI = baseUri; DisqusShortname = config.DisqusShortname}
             (Files.index od)
             (Files.archive od)

@@ -8,6 +8,10 @@
     <meta name="description" content="Ramblings by a developer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Include Brain</title>
+    @if (Model.BaseURI != null) 
+    {
+    <base href="@Model.BaseURI"/>
+    }
     <link rel="shortcut icon" href="/favicon.png">
     <link rel="alternate" type="application/rss+xml" title="Include Brain" href="//includebrain.com/blog/rss" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
