@@ -18,5 +18,5 @@ I hope you will enjoy my writings!
 
   [1]: http://www.apptus.com
   [2]: http://www.dreamhack.se/
-  [3]: /blog/post/hello/img/include-brain-cap.jpg
-  [4]: /blog/about
+  [3]: blog/post/hello/img/include-brain-cap.jpg
+  [4]: blog/about

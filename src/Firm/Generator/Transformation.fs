@@ -11,7 +11,7 @@ module Transformation =
     type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
     type Config =
-        { BaseURI: string option
+        { BaseURI: string
           DisqusShortname: string }
 
     let dirEnumerator id =
@@ -66,15 +66,11 @@ module Transformation =
 
     let generate root =
         let config = ConfigReader.Load(root @+ "config.json")
-        let baseUri =
-            match config.BaseUri with
-            | "" | null -> None
-            | bu -> Some bu
         let id = root @+ "input"
         let od = root @+ "output"
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
-            {BaseURI = baseUri; DisqusShortname = config.DisqusShortname}
+            {BaseURI = config.BaseUri; DisqusShortname = config.DisqusShortname}
             (Files.index od)
             (Files.archive od)
