@@ -72,19 +72,19 @@ goto :end
 :preview
 if not exist output call :generate
 echo Starting HTTP server to preview site...
-bin\Host.exe "%root%output\\"
+bin\Host.exe "%root%output\\" %2
 echo Done!
 goto :end
 
 :help
 echo Available commands:
-echo   reset       Removes all downloaded and generated files/folders.
-echo   init        Installs the required paket dependencies.
-echo   clean       Cleans the build directory.
-echo   build       Builds the firm application.
-echo   generate    Generates the web site.
-echo   regenerate  Removes the output directory and generates the web site.
-echo   preview     Starts a local http server for previewing the generated blog.
+echo   reset             Removes all downloaded and generated files/folders.
+echo   init              Installs the required paket dependencies.
+echo   clean             Cleans the build directory.
+echo   build             Builds the firm application.
+echo   generate          Generates the web site.
+echo   regenerate        Removes the output directory and generates the web site.
+echo   preview <baseUri> Starts a local http server for previewing the generated blog.
 
 :end
 endlocal
