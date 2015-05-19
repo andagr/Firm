@@ -1,17 +1,17 @@
-﻿namespace Generator
+﻿namespace Firm
 
 open System.IO
 open Files
-open Models
+open Firm.Models
 open FSharp.Data
 open FSharp.Literate
 
 module Transformation =
-    type ConfigReader = JsonProvider<"""{ "baseURI": "http://localhost:8080/", "disqusShortname": "a-name" }""">
+    type ConfigReader = JsonProvider<"""{ "baseUrl": "http://localhost:8080/", "disqusShortname": "a-name" }""">
     type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
 
     type Config =
-        { BaseURI: string
+        { BaseUrl: string
           DisqusShortname: string }
 
     let dirEnumerator id =
@@ -31,16 +31,16 @@ module Transformation =
             posts
             |> List.map (fun pf ->
                 let meta = MetaReader.Load(pf.Meta)
-                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(pf.File.Input))
+                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(pf.File.Input) |> Urls.withAbsUrls config.BaseUrl) 
                 pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
-            |> List.sortBy (fun (pf, pm) -> pm.Date)
+            |> List.sortBy (fun (_, pm) -> pm.Date)
             |> List.rev
         let allPosts = postModels |> List.map snd
         let tagCloud = getTagCloud allPosts
         postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.BaseURI, config.DisqusShortname, p, allPosts, tagCloud)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, allPosts, tagCloud)))
         |> List.iter Output.Razor.writePost
-        let allPostsModel = AllPostsModel(config.BaseURI, config.DisqusShortname, allPosts, tagCloud)
+        let allPostsModel = AllPostsModel(config.BaseUrl, config.DisqusShortname, allPosts, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
         (allPosts, tagCloud)
@@ -49,9 +49,9 @@ module Transformation =
         pages
         |> List.map (fun p ->
             (p, PageModel(
-                    config.BaseURI,
+                    config.BaseUrl,
                     config.DisqusShortname,
-                    Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input)),
+                    Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input) |> Urls.withAbsUrls config.BaseUrl),
                     allPosts,
                     tagCloud)))
         |> List.iter Output.Razor.writePage
@@ -71,6 +71,6 @@ module Transformation =
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
-            {BaseURI = config.BaseUri; DisqusShortname = config.DisqusShortname}
+            {BaseUrl = config.BaseUrl; DisqusShortname = config.DisqusShortname}
             (Files.index od)
             (Files.archive od)

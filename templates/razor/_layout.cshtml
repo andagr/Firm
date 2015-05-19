@@ -8,12 +8,11 @@
     <meta name="description" content="Ramblings by a developer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Include Brain</title>
-    <base href="@Model.BaseURI"/>
-    <link rel="shortcut icon" href="favicon.png">
-    <link rel="alternate" type="application/rss+xml" title="Include Brain" href="//includebrain.com/blog/rss" />
+    <link rel="shortcut icon" href='@Model.ToAbsUrl("/favicon.png")'>
+    <link rel="alternate" type="application/rss+xml" title="Include Brain" href='@Model.ToAbsUrl("/blog/rss")' />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/FSharp.Formatting/styles/style.css">
-    <link rel="stylesheet" href="css/firm.css">
+    <link rel="stylesheet" href='@Model.ToAbsUrl("/css/FSharp.Formatting/styles/style.css")'>
+    <link rel="stylesheet" href='@Model.ToAbsUrl("/css/firm.css")'>
     <!--[if lt IE 9]>
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
@@ -29,19 +28,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">Include Brain</a>
+                <a class="navbar-brand" href='@Model.ToAbsUrl("/")'>Include Brain</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class=""><a href="blog/about">About</a></li>
-                    <li class=""><a href="blog/archive">Archive</a></li>
+                    <li class=""><a href='@Model.ToAbsUrl("/blog/about")'>About</a></li>
+                    <li class=""><a href='@Model.ToAbsUrl("/blog/archive")'>Archive</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <div id="topsection" class="jumbotron">
         <div class="container">
-            <h1><a href="">Include Brain</a></h1>
+            <h1><a href='@Model.ToAbsUrl("/")'>Include Brain</a></h1>
             <p>Ramblings by a developer</p>
         </div>
     </div>
@@ -54,7 +53,7 @@
                 <div id="tag-cloud">
                     @foreach (var tag in Model.Tags)
                     {
-                        <a class="tag tag-unselected" data-postcount="@tag.Count" href="blog/archive?tag=@Uri.EscapeDataString(tag.Name)">@tag.Name</a>
+                        <a class="tag tag-unselected" data-postcount="@tag.Count" href='@Model.ToAbsUrl("/blog/archive")?tag=@Uri.EscapeDataString(tag.Name)'>@tag.Name</a>
                     }
                 </div>
                 <div id="latest-posts">
@@ -62,7 +61,7 @@
                     @foreach (var post in Model.AllPosts.Take(5))
                     {
                         <h4>
-                            <a href="blog/post/@post.Name/">@post.Title</a>
+                            <a href='@Model.ToAbsUrl("/blog/post")/@post.Name/'>@post.Title</a>
                             <br/>
                             <small>@post.Date</small>
                         </h4>
@@ -87,8 +86,8 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script type="text/javascript" src="js/ie10-viewport-bug-workaround.js"></script>
-    <script type="text/javascript" src="js/FSharp.Formatting/tips.js"></script>
-    <script type="text/javascript" src="js/netext.js"></script>
+    <script type="text/javascript" src='@Model.ToAbsUrl("/js/ie10-viewport-bug-workaround.js")'></script>
+    <script type="text/javascript" src='@Model.ToAbsUrl("/js/FSharp.Formatting/tips.js")'></script>
+    <script type="text/javascript" src='@Model.ToAbsUrl("/js/netext.js")'></script>
 </body>
 </html>

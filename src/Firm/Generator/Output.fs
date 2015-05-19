@@ -1,8 +1,8 @@
-﻿namespace Generator
+﻿namespace Firm
 
 open System.IO
 open Files
-open Models
+open Firm.Models
 open RazorEngine
 open RazorEngine.Templating
 

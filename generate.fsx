@@ -52,9 +52,9 @@ Seq.collect collectParLinks parsed.Paragraphs
 |> List.ofSeq
 
 
-let toAbsUrl (prefix : string) url =
+let toAbsUrl (prefix:string) (url:string) =
     match url with
-    | u when String.length u >= 2 && u.StartsWith("//") -> u
+    | u when u.StartsWith("//") -> u
     | u when u.StartsWith("/") -> prefix.TrimEnd('/') + u
     | u -> u
 

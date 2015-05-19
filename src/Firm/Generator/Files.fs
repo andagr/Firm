@@ -1,4 +1,4 @@
-﻿namespace Generator
+﻿namespace Firm
 
 open System
 open System.IO

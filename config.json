@@ -1,4 +1,4 @@
 {
-    "baseURI": "/Firm/",
+    "baseUrl": "http://localhost:8080",
     "disqusShortname": "includebrain"
 }

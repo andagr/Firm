@@ -1,9 +1,9 @@
-﻿namespace Generator
+﻿namespace Firm
 
 open System.IO
 
 module Program =
     [<EntryPoint>]
-    let main args =
+    let main _ =
         Transformation.generate (Directory.GetCurrentDirectory())
         0
