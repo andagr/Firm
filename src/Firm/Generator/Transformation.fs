@@ -26,24 +26,26 @@ module Transformation =
         |> Seq.groupBy (fun t -> t)
         |> Seq.map (fun (t, ts) -> TagModel(t, Seq.length ts))
 
-    let private processPosts config index archive (posts: PostFile list) =
-        let postModels =
-            posts
+    let private processPosts config index archive (postFiles: PostFile list) =
+        let postsData =
+            postFiles
             |> List.map (fun pf ->
                 let meta = MetaReader.Load(pf.Meta)
-                let doc = Literate.WriteHtml(Literate.ParseMarkdownFile(pf.File.Input) |> Urls.withAbsUrls config.BaseUrl) 
-                pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
-            |> List.sortBy (fun (_, pm) -> pm.Date)
+                let md = Literate.ParseMarkdownFile(pf.File.Input) |> Urls.withAbsUrls config.BaseUrl
+                let doc = Literate.WriteHtml(md) 
+                pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc), md)
+            |> List.sortBy (fun (_, pm, _) -> pm.Date)
             |> List.rev
-        let allPosts = postModels |> List.map snd
-        let tagCloud = getTagCloud allPosts
-        postModels
-        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, allPosts, tagCloud)))
+        let _, postModels, literateDocs = postsData |> List.unzip3
+        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\rss.xml" (literateDocs |> List.map (fun ld -> ld.With(formattedTips = ""), "title"))
+        let tagCloud = getTagCloud postModels
+        postsData
+        |> List.map (fun (pf, p, _) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, postModels, tagCloud)))
         |> List.iter Output.Razor.writePost
-        let allPostsModel = AllPostsModel(config.BaseUrl, config.DisqusShortname, allPosts, tagCloud)
+        let allPostsModel = AllPostsModel(config.BaseUrl, config.DisqusShortname, postModels, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
         index |> List.iter (Output.Razor.writeIndex allPostsModel)
-        (allPosts, tagCloud)
+        (postModels, tagCloud)
 
     let private processPages config (pages: PageFile list) (allPosts, tagCloud) =
         pages
