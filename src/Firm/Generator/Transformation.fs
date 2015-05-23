@@ -2,18 +2,11 @@
 
 open System.IO
 open Files
-open Firm.Models
-open FSharp.Data
 open FSharp.Literate
+open Firm.Models
+open Data
 
 module Transformation =
-    type ConfigReader = JsonProvider<"""{ "baseUrl": "http://localhost:8080/", "disqusShortname": "a-name" }""">
-    type MetaReader = JsonProvider<"""{ "title": "Hello", "date": "2013-07-27 21:22:35", "tags": ["blog", "hello"] }""">
-
-    type Config =
-        { BaseUrl: string
-          DisqusShortname: string }
-
     let dirEnumerator id =
         Directory.EnumerateFiles(id, "*", SearchOption.AllDirectories)
 
@@ -30,17 +23,16 @@ module Transformation =
         let postsData =
             postFiles
             |> List.map (fun pf ->
-                let meta = MetaReader.Load(pf.Meta)
+                let meta = pf.Meta
                 let md = Literate.ParseMarkdownFile(pf.File.Input) |> Urls.withAbsUrls config.BaseUrl
                 let doc = Literate.WriteHtml(md) 
-                pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc), md)
-            |> List.sortBy (fun (_, pm, _) -> pm.Date)
+                pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
+            |> List.sortBy (fun (_, pm) -> pm.Date)
             |> List.rev
-        let _, postModels, literateDocs = postsData |> List.unzip3
-        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\blog\rss.xml" (literateDocs |> List.map (fun ld -> ld.With(formattedTips = null), "title"))
+        let _, postModels = postsData |> List.unzip
         let tagCloud = getTagCloud postModels
         postsData
-        |> List.map (fun (pf, p, _) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, postModels, tagCloud)))
+        |> List.map (fun (pf, p) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, postModels, tagCloud)))
         |> List.iter Output.Razor.writePost
         let allPostsModel = AllPostsModel(config.BaseUrl, config.DisqusShortname, postModels, tagCloud)
         Output.Razor.writeArchive allPostsModel archive 
@@ -65,6 +57,7 @@ module Transformation =
         let allPostsData = processPosts config index archive posts
         processPages config pages allPostsData
         processResources resources
+        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\blog\rss.xml" posts
 
     let generate root =
         let config = ConfigReader.Load(root @+ "config.json")

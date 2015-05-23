@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open Data
 
 module Files =
     type FileData =
@@ -10,7 +11,7 @@ module Files =
 
     type PostFile =
         { File: FileData
-          Meta: string
+          Meta: MetaData
           Name: string }
 
     type PageFile =
@@ -57,7 +58,7 @@ module Files =
     let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = meta; Name = postName f})
+        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = MetaData.fromFile meta; Name = postName f})
         | Content -> PageFile({PageFile.File = {Input = f; Output = outFile (id, od) f @. ".html"}})
         | Resource -> ResourceFile({ResourceFile.File = {Input = f; Output = outFile (id, od) f}})
 

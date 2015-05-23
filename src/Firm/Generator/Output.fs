@@ -6,7 +6,7 @@ open Files
 open Firm.Models
 open RazorEngine
 open RazorEngine.Templating
-open FSharp.Literate
+open FSharp.Markdown
 
 module Output =
     let copyResource (resource: ResourceFile) =
@@ -28,7 +28,9 @@ module Output =
         let text (value: string) =
             XText(value)
 
-        let generateRss (rssFileName: string) (items: (LiterateDocument * string) list) =
+        // Todo: Configure below values
+        // Todo: Fix image urls for posts
+        let generateRss (rssFileName: string) (postFiles: PostFile list) =
             let channelMeta = [
                 element "title" [text "Include Brain"]
                 element "link" [text "http://includebrain.com"]
@@ -37,10 +39,16 @@ module Output =
                 element "category" [text "Software Development"]
                 element "managingEditor" [text "andreas@includebrain.com"]
                 element "webMaster" [text "andreas@includebrain.com"] ]
-            let itemElems = items |> List.map (fun (ld, title) ->
-                element "item" [
-                    element "title" [text title]
-                    element "description" [text (Literate.WriteHtml(ld))]])
+            let itemElems = 
+                postFiles
+                    |> List.sortBy (fun pf -> pf.Meta.Date)
+                    |> List.rev
+                    |> List.map (fun pf ->
+                    let html = Markdown.TransformHtml(File.ReadAllText(pf.File.Input))
+                    element "item" [
+                        element "title" [text pf.Meta.Title]
+                        element "link" [text ("http://includebrain.com/blog/post/" + pf.Name)]
+                        element "description" [text html]])
             let rss =
                 document [
                     element "rss" [

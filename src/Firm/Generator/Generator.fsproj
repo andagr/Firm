@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Urls.fs" />
     <Compile Include="Models.fs" />
+    <Compile Include="Data.fs" />
     <Compile Include="Files.fs" />
     <Compile Include="Output.fs" />
     <Compile Include="Transformation.fs" />
