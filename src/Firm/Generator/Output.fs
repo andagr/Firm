@@ -16,18 +16,17 @@ module Output =
             File.Copy(resource.File.Input, resource.File.Output)
 
     module Xml =
-        // Idea for helper functions copied from http://luketopia.net/2013/10/06/xml-transformations-with-fsharp/
-        let element name (children: XObject seq) =
+        let element name (children: XObject list) =
             XElement(XName.Get name, children) :> XObject
 
         let attribute name value =
-            XAttribute(XName.Get name, value) :> XObject
+            XAttribute(XName.Get name, value)
 
-        let document (children: XObject seq) =
+        let document (children: XObject list) =
             XDocument(children)
 
         let text (value: string) =
-            XText(value) :> XObject
+            XText(value)
 
         let generateRss (rssFileName: string) (items: (LiterateDocument * string) list) =
             let channelMeta = [
@@ -47,6 +46,7 @@ module Output =
                     element "rss" [
                         attribute "version" "2.0"
                         element "channel" (channelMeta@itemElems) ] ]
+            Directory.CreateDirectory(Path.GetDirectoryName(rssFileName)) |> ignore
             rss.Save(rssFileName)
 
     module Razor =

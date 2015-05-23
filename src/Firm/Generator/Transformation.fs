@@ -37,7 +37,7 @@ module Transformation =
             |> List.sortBy (fun (_, pm, _) -> pm.Date)
             |> List.rev
         let _, postModels, literateDocs = postsData |> List.unzip3
-        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\rss.xml" (literateDocs |> List.map (fun ld -> ld.With(formattedTips = ""), "title"))
+        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\blog\rss.xml" (literateDocs |> List.map (fun ld -> ld.With(formattedTips = null), "title"))
         let tagCloud = getTagCloud postModels
         postsData
         |> List.map (fun (pf, p, _) -> (pf, SinglePostModel(config.BaseUrl, config.DisqusShortname, p, postModels, tagCloud)))
