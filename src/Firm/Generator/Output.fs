@@ -47,7 +47,7 @@ module Output =
                     let html = Markdown.WriteHtml(md)
                     element "item" [
                         element "title" [text pf.Meta.Title]
-                        element "link" [text (Urls.toAbsUrl config.BaseUrl (sprintf "/blog/post/%s/" pf.Name))]
+                        element "link" [text (Urls.toAbsUrl config.BaseUrl (sprintf "/blog/post/%s" pf.Name))]
                         element "description" [text html]])
             let rss =
                 document [
