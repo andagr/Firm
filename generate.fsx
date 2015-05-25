@@ -1,3 +1,4 @@
+#load "src/Firm/Generator/Urls.fs"
 #r "bin/RazorEngine.dll"
 #r "bin/FSharp.CodeFormat.dll"
 #r "bin/FSharp.Markdown.dll"
@@ -6,7 +7,7 @@
 open System.Collections.Generic
 open FSharp.Literate
 open FSharp.Markdown
-
+open Firm
 
 //https://tpetricek.github.io/FSharp.Formatting/markdown.html
 let document = """
@@ -80,3 +81,14 @@ let withAbsUrls (doc : LiterateDocument) =
     doc.With(paragraphs = List.map fromPar doc.Paragraphs, definedLinks = fromDefLinks doc.DefinedLinks)
 
 Literate.WriteHtml(withAbsUrls parsed)
+
+let content = """
+hello
+
+    printfn "hej"
+"""
+
+let m = Literate.ParseMarkdownString(content)//.With(formattedTips="")
+printfn "%s" (Literate.WriteHtml(m, prefix = "asdf"))
+printfn "%A" m.Paragraphs
+printfn "%s" (Markdown.WriteHtml(Markdown.Parse(document) |> Urls.Markdown.withAbsUrls "http://localhost:8080"))

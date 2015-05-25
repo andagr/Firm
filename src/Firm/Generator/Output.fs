@@ -4,6 +4,7 @@ open System.IO
 open System.Xml.Linq
 open Files
 open Firm.Models
+open Data
 open RazorEngine
 open RazorEngine.Templating
 open FSharp.Markdown
@@ -28,34 +29,34 @@ module Output =
         let text (value: string) =
             XText(value)
 
-        // Todo: Configure below values
-        // Todo: Fix image urls for posts
-        let generateRss (rssFileName: string) (postFiles: PostFile list) =
+        let generateRss outputDir (config: ConfigData) (postFiles: PostFile list) =
             let channelMeta = [
-                element "title" [text "Include Brain"]
-                element "link" [text "http://includebrain.com"]
-                element "description" [text "Ramblings of a developer."]
-                element "language" [text "en-us"]
-                element "category" [text "Software Development"]
-                element "managingEditor" [text "andreas@includebrain.com"]
-                element "webMaster" [text "andreas@includebrain.com"] ]
+                element "title" [text config.Rss.Title]
+                element "link" [text config.BaseUrl]
+                element "description" [text config.Rss.Description]
+                element "language" [text config.Rss.Language]
+                element "category" [text config.Rss.Category]
+                element "managingEditor" [text config.Rss.ManagingEditor]
+                element "webMaster" [text config.Rss.WebMaster] ]
             let itemElems = 
                 postFiles
                     |> List.sortBy (fun pf -> pf.Meta.Date)
                     |> List.rev
                     |> List.map (fun pf ->
-                    let html = Markdown.TransformHtml(File.ReadAllText(pf.File.Input))
+                    let md = Markdown.Parse(File.ReadAllText(pf.File.Input)) |> Urls.Markdown.withAbsUrls config.BaseUrl
+                    let html = Markdown.WriteHtml(md)
                     element "item" [
                         element "title" [text pf.Meta.Title]
-                        element "link" [text ("http://includebrain.com/blog/post/" + pf.Name)]
+                        element "link" [text (Urls.toAbsUrl config.BaseUrl (sprintf "/blog/post/%s/" pf.Name))]
                         element "description" [text html]])
             let rss =
                 document [
                     element "rss" [
                         attribute "version" "2.0"
                         element "channel" (channelMeta@itemElems) ] ]
-            Directory.CreateDirectory(Path.GetDirectoryName(rssFileName)) |> ignore
-            rss.Save(rssFileName)
+            let blogDir = outputDir @+ "blog"
+            Directory.CreateDirectory(blogDir) |> ignore
+            rss.Save(blogDir @+ "rss.xml")
 
     module Razor =
         type TplKeys =

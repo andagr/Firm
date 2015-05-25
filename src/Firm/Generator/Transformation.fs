@@ -24,7 +24,7 @@ module Transformation =
             postFiles
             |> List.map (fun pf ->
                 let meta = pf.Meta
-                let md = Literate.ParseMarkdownFile(pf.File.Input) |> Urls.withAbsUrls config.BaseUrl
+                let md = Literate.ParseMarkdownFile(pf.File.Input) |> Urls.Literate.withAbsUrls config.BaseUrl
                 let doc = Literate.WriteHtml(md) 
                 pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
             |> List.sortBy (fun (_, pm) -> pm.Date)
@@ -45,7 +45,7 @@ module Transformation =
             (p, PageModel(
                     config.BaseUrl,
                     config.DisqusShortname,
-                    Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input) |> Urls.withAbsUrls config.BaseUrl),
+                    Literate.WriteHtml(Literate.ParseMarkdownFile(p.File.Input) |> Urls.Literate.withAbsUrls config.BaseUrl),
                     allPosts,
                     tagCloud)))
         |> List.iter Output.Razor.writePage
@@ -53,11 +53,11 @@ module Transformation =
     let private processResources (resources: ResourceFile list) =
         resources |> List.iter Output.copyResource
 
-    let private processInputs config index archive (posts, pages, resources) =
+    let private processInputs outputDir config index archive (posts, pages, resources) =
         let allPostsData = processPosts config index archive posts
         processPages config pages allPostsData
         processResources resources
-        Output.Xml.generateRss @"C:\Users\Fam\Documents\GitHub\Firm\output\blog\rss.xml" posts
+        Output.Xml.generateRss outputDir config posts
 
     let generate root =
         let config = ConfigReader.Load(root @+ "config.json")
@@ -66,6 +66,7 @@ module Transformation =
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)
         |> processInputs
-            {BaseUrl = config.BaseUrl; DisqusShortname = config.DisqusShortname}
+            od
+            (ConfigData.fromFile(root @+ "config.json"))
             (Files.index od)
             (Files.archive od)

@@ -1,8 +1,8 @@
 ﻿namespace Firm
 
 open System.Collections.Generic
-open FSharp.Literate
 open FSharp.Markdown
+open FSharp.Literate
 
 module Urls =
     let toAbsUrl (prefix:string) (url:string) =
@@ -11,7 +11,7 @@ module Urls =
         | u when u.StartsWith("/") -> prefix.TrimEnd('/') + u
         | u -> u
 
-    let withAbsUrls baseUrl (doc:LiterateDocument) =
+    let withAbsUrls baseUrl (paragraphs:MarkdownParagraphs, definedLinks: IDictionary<string, (string * string option)>) =
         let rec fromSpan = function
             | DirectLink(spans, (url, title)) -> DirectLink(spans, (toAbsUrl baseUrl url, title))
             | Matching.SpanNode(sni, ss) ->
@@ -30,4 +30,14 @@ module Urls =
             defLinks
             |> Seq.map (fun kvp -> kvp.Key, (toAbsUrl baseUrl (fst kvp.Value), snd kvp.Value))
             |> dict
-        doc.With(paragraphs = List.map fromPar doc.Paragraphs, definedLinks = fromDefLinks doc.DefinedLinks)
+        List.map fromPar paragraphs, fromDefLinks definedLinks
+
+    module Markdown =
+        let withAbsUrls baseUrl (doc:MarkdownDocument) =
+            let paragraphs, definedLinks = withAbsUrls baseUrl (doc.Paragraphs, doc.DefinedLinks)
+            MarkdownDocument(paragraphs, definedLinks)
+
+    module Literate =
+        let withAbsUrls baseUrl (doc: LiterateDocument) =
+            let paragraphs, definedLinks = withAbsUrls baseUrl (doc.Paragraphs, doc.DefinedLinks)
+            doc.With(paragraphs = paragraphs, definedLinks = definedLinks)
