@@ -60,8 +60,7 @@ module Transformation =
         Output.Xml.generateRss outputDir config posts
 
     let generate root =
-        let config = ConfigReader.Load(root @+ "config.json")
-        let id = root @+ "input"
+        let id = root @+ "data" @+ "input"
         let od = root @+ "output"
         Output.Razor.compileTemplates root
         Files.inputFiles dirEnumerator fileExists (id, od)

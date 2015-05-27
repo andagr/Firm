@@ -80,7 +80,7 @@ module Output =
                 let tpl, name = tplInfo
                 printfn "Compiling template %s..." name
                 Engine.Razor.AddTemplate(name, File.ReadAllText(tpl))
-            let tplDir = root @+ "templates" @+ "razor"
+            let tplDir = root @+ "data" @+ "templates" @+ "razor"
             [ tplInfo tplDir tplKeys.Layout
               tplInfo tplDir tplKeys.Post
               tplInfo tplDir tplKeys.Page
