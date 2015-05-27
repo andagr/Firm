@@ -1,0 +1,509 @@
+
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Ramblings by a developer">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Include Brain</title>
+    <link rel="shortcut icon" href='http://andagr.github.io/Firm/favicon.png'>
+    <link rel="alternate" type="application/rss+xml" title="Include Brain" href='http://andagr.github.io/Firm/blog/rss.xml' />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href='http://andagr.github.io/Firm/css/FSharp.Formatting/styles/style.css'>
+    <link rel="stylesheet" href='http://andagr.github.io/Firm/css/firm.css'>
+    <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href='http://andagr.github.io/Firm/'>Include Brain</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class=""><a href='http://andagr.github.io/Firm/blog/about'>About</a></li>
+                    <li class=""><a href='http://andagr.github.io/Firm/blog/archive'>Archive</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="topsection" class="jumbotron">
+        <div class="container">
+            <h1><a href='http://andagr.github.io/Firm/'>Include Brain</a></h1>
+            <p>Ramblings by a developer</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div id="main-panel" class="col-md-8">
+                
+
+
+<div class="post">
+    <h1 class="post-title">Helping Bitizens to Better Jobs in Tiny Tower Using F#</h1>
+    <small>2014-03-17 11:27:23</small>
+    <div class="post-content"><p><img src="http://andagr.github.io/Firm/blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp/img/650px-Banner.png" alt="Tiny Tower" /></p>
+
+<p>From the <a href="http://tinytower.wikia.com/wiki/Tiny_Tower_Wiki">Tiny Tower wiki</a>:</p>
+
+<blockquote>
+  <p>Tiny Tower is a simulation game developed by <a href="http://www.nimblebit.com/">NimbleBit</a> and released in
+June 2011. It is available to download on Apple iOS devices (3.0 or
+later) and Android devices. The object of the game is to build and
+manage a large skyscraper. Each new floor the player builds is either
+a Commercial floor that hosts businesses and venues, or a Residential
+floor that Bitizens live in. Bitizens live and work in the player's
+Tower, paying rent every day and stocking the Commercial floors with
+items to sell. The player's goal is to turn a profit, build more
+floors, and manage their ever-growing tower.</p>
+</blockquote>
+
+<p>Like you and me, bitizens have job satisfaction. This is decided by two things, their skill in the job, and if it is their dream job. To be specific:</p>
+
+<h2>Category / Color</h2>
+
+<p>Each business has a color that represents a category:</p>
+
+<ul>
+<li>Green for food</li>
+<li>Blue for service</li>
+<li>Purple for retail</li>
+<li>Yellow for recreation</li>
+<li>Orange for creative</li>
+</ul>
+
+<p>Each bitizen has one skill level, ranging from 0 - 9, in each color. The higher the skill level, the greater the discount will be for stocking items.</p>
+
+<h2>Dream Job</h2>
+
+<p>They also have one dream job that corresponds to a name of a business. When a bitizen is employed at her dream job she will be able to stock twice as many items as normal.</p>
+
+<h2>Sorting by Job Satisfaction</h2>
+
+<p>Higher job satisfaction means higher revenue, and using the above information we can create a tool that takes a list of bitizens and a list of businesses as input, and outputs a list of optimal employments (each business can employ three bitizens).</p>
+
+<p>Let's use the following formula for scoring the employment value of a bitizen:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="i">Skill</span> <span class="o">*</span> <span class="n">10</span> <span class="o">+</span> <span class="n">10</span> <span class="o">-</span> <span class="i">Avg</span>(<span class="i">Rest</span> <span class="k">of</span> <span class="i">Skills</span>)
+</pre>
+</td>
+</tr>
+</table>
+
+<p>What this means is that the skill we are looking for is the one highest valued, and that specialists (high skill in question, low for others) are more valued than generalists (high in all skills). Here are some examples:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+<span class="l">6: </span>
+<span class="l">7: </span>
+<span class="l">8: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+  |
+  <span class="i">V</span>
+<span class="n">0</span>,<span class="n">9</span>,<span class="n">0</span> <span class="o">=&gt;</span> <span class="n">9</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">0</span> <span class="o">=</span> <span class="n">100</span>
+<span class="n">1</span>,<span class="n">9</span>,<span class="n">1</span> <span class="o">=&gt;</span> <span class="n">9</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">1</span> <span class="o">=</span> <span class="n">99</span>
+<span class="n">8</span>,<span class="n">9</span>,<span class="n">1</span> <span class="o">=&gt;</span> <span class="n">9</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">4.5</span> <span class="o">=</span> <span class="n">95</span>,<span class="n">5</span>
+<span class="n">8</span>,<span class="n">9</span>,<span class="n">8</span> <span class="o">=&gt;</span> <span class="n">9</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">8</span> <span class="o">=</span> <span class="n">92</span>
+<span class="n">9</span>,<span class="n">9</span>,<span class="n">9</span> <span class="o">=&gt;</span> <span class="n">9</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">9</span> <span class="o">=</span> <span class="n">91</span>
+<span class="n">0</span>,<span class="n">8</span>,<span class="n">0</span> <span class="o">=&gt;</span> <span class="n">8</span><span class="o">*</span><span class="n">10</span> <span class="o">+</span> <span class="n">10</span><span class="o">-</span><span class="n">0</span> <span class="o">=</span> <span class="n">90</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>The arrow denotes the skill column we are looking for in this specific example (the actual data will have of course have 5 skill values for each bitizen). As you can see, a bitizen with 9 in all skills is valued lower than one with 9 in only the desired skill. This is because if there are, say, 4 bitizens with a skill value of 9 for a specific job, then it's probably better to use up the specialist for this job and save the generalist for another job further down the list. The calculated value is then used to sort the list of bitizens based on which business that are looking for employees.</p>
+
+<h2>Types</h2>
+
+<p>Let's start with the F# types:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+<span class="l">19: </span>
+<span class="l">20: </span>
+<span class="l">21: </span>
+<span class="l">22: </span>
+<span class="l">23: </span>
+<span class="l">24: </span>
+<span class="l">25: </span>
+<span class="l">26: </span>
+<span class="l">27: </span>
+<span class="l">28: </span>
+<span class="l">29: </span>
+<span class="l">30: </span>
+<span class="l">31: </span>
+<span class="l">32: </span>
+<span class="l">33: </span>
+<span class="l">34: </span>
+<span class="l">35: </span>
+<span class="l">36: </span>
+<span class="l">37: </span>
+<span class="l">38: </span>
+<span class="l">39: </span>
+<span class="l">40: </span>
+<span class="l">41: </span>
+<span class="l">42: </span>
+<span class="l">43: </span>
+<span class="l">44: </span>
+<span class="l">45: </span>
+<span class="l">46: </span>
+<span class="l">47: </span>
+<span class="l">48: </span>
+<span class="l">49: </span>
+<span class="l">50: </span>
+<span class="l">51: </span>
+<span class="l">52: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">type</span> <span class="i">Color</span> <span class="o">=</span>
+    | <span class="i">Green</span>
+    | <span class="i">Blue</span>
+    | <span class="i">Yellow</span>
+    | <span class="i">Purple</span>
+    | <span class="i">Orange</span>
+    <span class="k">with</span>
+        <span class="k">static</span> <span class="k">member</span> <span class="i">Parse</span> <span class="i">color</span> <span class="o">=</span>
+            <span class="k">match</span> <span class="i">color</span> <span class="k">with</span>
+            | <span class="s">&quot;green&quot;</span> <span class="k">-&gt;</span> <span class="i">Color</span><span class="o">.</span><span class="i">Green</span>
+            | <span class="s">&quot;blue&quot;</span> <span class="k">-&gt;</span> <span class="i">Color</span><span class="o">.</span><span class="i">Blue</span>
+            | <span class="s">&quot;yellow&quot;</span> <span class="k">-&gt;</span> <span class="i">Color</span><span class="o">.</span><span class="i">Yellow</span>
+            | <span class="s">&quot;purple&quot;</span> <span class="k">-&gt;</span> <span class="i">Color</span><span class="o">.</span><span class="i">Purple</span>
+            | <span class="s">&quot;orange&quot;</span> <span class="k">-&gt;</span> <span class="i">Color</span><span class="o">.</span><span class="i">Orange</span>
+            | _ <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">raise</span>(<span class="i">ArgumentException</span>(<span class="s">&quot;Invalid color&quot;</span>))
+        <span class="k">override</span> <span class="i">this</span><span class="o">.</span><span class="i">ToString</span>() <span class="o">=</span>
+            <span class="k">match</span> <span class="i">this</span> <span class="k">with</span>
+            | <span class="i">Green</span> <span class="k">-&gt;</span> <span class="s">&quot;Green&quot;</span>
+            | <span class="i">Blue</span> <span class="k">-&gt;</span> <span class="s">&quot;Blue&quot;</span>
+            | <span class="i">Yellow</span> <span class="k">-&gt;</span> <span class="s">&quot;Yellow&quot;</span>
+            | <span class="i">Purple</span> <span class="k">-&gt;</span> <span class="s">&quot;Purple&quot;</span>
+            | <span class="i">Orange</span> <span class="k">-&gt;</span> <span class="s">&quot;Orange&quot;</span>
+
+<span class="k">type</span> <span class="i">Skill</span>(<span class="i">color</span><span class="o">:</span> <span class="i">Color</span>, <span class="i">value</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">int</span>) <span class="o">=</span>
+    <span class="k">do</span> <span class="k">if</span> <span class="i">value</span> <span class="o">&lt;</span> <span class="n">0</span> <span class="o">||</span> <span class="i">value</span> <span class="o">&gt;</span> <span class="n">9</span> <span class="k">then</span> <span onmouseout="hideTip(event, 'fs1', 3)" onmouseover="showTip(event, 'fs1', 3)" class="i">raise</span> (<span class="i">ArgumentException</span>(<span class="s">&quot;Invalid skill value: &quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="i">sprintf</span> <span class="s">&quot;%i&quot;</span> <span class="i">value</span>))
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">Color</span> <span class="o">=</span> <span class="i">color</span>
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">Value</span> <span class="o">=</span> <span class="i">value</span>
+
+<span class="k">type</span> <span class="i">Bitizen</span>(<span class="i">name</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="i">string</span>, <span class="i">dreamJob</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs4', 6)" onmouseover="showTip(event, 'fs4', 6)" class="i">string</span>, <span class="i">skills</span><span class="o">:</span> <span class="i">Skill</span>[]) <span class="o">=</span>
+    <span class="k">do</span> <span class="k">if</span> <span class="i">skills</span><span class="o">.</span><span class="i">Length</span> <span class="o">&lt;&gt;</span> <span class="n">5</span> <span class="k">then</span> <span onmouseout="hideTip(event, 'fs1', 7)" onmouseover="showTip(event, 'fs1', 7)" class="i">raise</span>(<span class="i">ArgumentException</span>(<span class="s">&quot;Invalid number of skills&quot;</span>))
+    <span class="k">let</span> <span class="i">skillSum</span> <span class="o">=</span> <span class="i">skills</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs5', 8)" onmouseover="showTip(event, 'fs5', 8)" class="i">Array</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 9)" onmouseover="showTip(event, 'fs6', 9)" class="i">sumBy</span> (<span class="k">fun</span> <span class="i">s</span> <span class="k">-&gt;</span> <span class="i">s</span><span class="o">.</span><span class="i">Value</span>) <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs7', 10)" onmouseover="showTip(event, 'fs7', 10)" class="i">decimal</span>
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">Name</span> <span class="o">=</span> <span class="i">name</span>
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">DreamJob</span> <span class="o">=</span> <span class="i">dreamJob</span>
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">SortValueFor</span> (<span class="i">color</span><span class="o">:</span> <span class="i">Color</span>) <span class="o">=</span>
+        <span class="k">let</span> <span class="i">matchingSkill</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs7', 11)" onmouseover="showTip(event, 'fs7', 11)" class="i">decimal</span> (<span class="i">skills</span> <span class="o">|&gt;</span> (<span onmouseout="hideTip(event, 'fs5', 12)" onmouseover="showTip(event, 'fs5', 12)" class="i">Array</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs8', 13)" onmouseover="showTip(event, 'fs8', 13)" class="i">find</span> (<span class="k">fun</span> <span class="i">s</span> <span class="k">-&gt;</span> <span class="i">s</span><span class="o">.</span><span class="i">Color</span> <span class="o">=</span> <span class="i">color</span>)))<span class="o">.</span><span class="i">Value</span>
+        <span class="k">let</span> <span class="i">avgOtherskills</span> <span class="o">=</span> (<span class="i">skillSum</span> <span class="o">-</span> <span class="i">matchingSkill</span>) <span class="o">/</span> <span class="n">4m</span>
+        <span class="n">0m</span> <span class="o">-</span> (<span class="i">matchingSkill</span> <span class="o">*</span> <span class="n">10m</span> <span class="o">+</span> <span class="n">10m</span> <span class="o">-</span> <span class="i">avgOtherskills</span>)
+    <span class="k">override</span> <span class="i">this</span><span class="o">.</span><span class="i">ToString</span>() <span class="o">=</span>
+        <span class="i">name</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="i">dreamJob</span> <span class="o">+</span> <span class="s">&quot;, [| &quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs9', 14)" onmouseover="showTip(event, 'fs9', 14)" class="i">String</span><span class="o">.</span><span class="i">Join</span>(<span class="s">&quot;; &quot;</span>, <span class="i">skills</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs5', 15)" onmouseover="showTip(event, 'fs5', 15)" class="i">Array</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs10', 16)" onmouseover="showTip(event, 'fs10', 16)" class="i">map</span> (<span class="k">fun</span> <span class="i">s</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs4', 17)" onmouseover="showTip(event, 'fs4', 17)" class="i">string</span> <span class="i">s</span><span class="o">.</span><span class="i">Color</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs4', 18)" onmouseover="showTip(event, 'fs4', 18)" class="i">string</span> <span class="i">s</span><span class="o">.</span><span class="i">Value</span>)) <span class="o">+</span> <span class="s">&quot; |]&quot;</span>
+
+<span class="k">type</span> <span class="i">Job</span> <span class="o">=</span> 
+    { <span class="i">Name</span><span class="o">:</span> <span onmouseout="hideTip(event, 'fs4', 19)" onmouseover="showTip(event, 'fs4', 19)" class="i">string</span>; <span class="i">Color</span><span class="o">:</span> <span class="i">Color</span>; }
+    <span class="k">with</span>
+        <span class="k">override</span> <span class="i">this</span><span class="o">.</span><span class="i">ToString</span>() <span class="o">=</span>
+            <span class="i">this</span><span class="o">.</span><span class="i">Name</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs4', 20)" onmouseover="showTip(event, 'fs4', 20)" class="i">string</span> <span class="i">this</span><span class="o">.</span><span class="i">Color</span>
+
+<span class="k">type</span> <span class="i">Position</span> <span class="o">=</span> 
+    { <span class="i">Job</span><span class="o">:</span> <span class="i">Job</span>; <span class="i">Employee</span><span class="o">:</span> <span class="i">Bitizen</span>; }
+    <span class="k">with</span>
+        <span class="k">override</span> <span class="i">this</span><span class="o">.</span><span class="i">ToString</span>() <span class="o">=</span>
+            <span class="k">let</span> <span class="i">jobStr</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 21)" onmouseover="showTip(event, 'fs4', 21)" class="i">string</span> <span class="i">this</span><span class="o">.</span><span class="i">Job</span>
+            <span class="i">jobStr</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs9', 22)" onmouseover="showTip(event, 'fs9', 22)" class="i">String</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 23)" onmouseover="showTip(event, 'fs11', 23)" class="i">replicate</span> (<span class="n">25</span> <span class="o">-</span> <span class="i">jobStr</span><span class="o">.</span><span class="i">Length</span>) <span class="s">&quot; &quot;</span> <span class="o">+</span> <span onmouseout="hideTip(event, 'fs4', 24)" onmouseover="showTip(event, 'fs4', 24)" class="i">string</span> <span class="i">this</span><span class="o">.</span><span class="i">Employee</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>From this we can create a list of bitizens that each have a dream job and a helper method for getting her skill value based on a color. We can also create a list of jobs where each job is of a specific color (i.e. category).</p>
+
+<h2>Filling vacant positions</h2>
+
+<p>From one list of jobs and one of bitizens, assign jobs according to our earlier defined formula using the following function:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">let</span> <span class="i">fillPositions</span> <span class="i">filter</span> (<span class="i">jobs</span><span class="o">:</span> <span class="i">Job</span> <span onmouseout="hideTip(event, 'fs12', 25)" onmouseover="showTip(event, 'fs12', 25)" class="i">list</span>) (<span class="i">bitizens</span><span class="o">:</span> <span class="i">Bitizen</span> <span onmouseout="hideTip(event, 'fs12', 26)" onmouseover="showTip(event, 'fs12', 26)" class="i">list</span>) <span class="o">=</span>
+    <span class="k">let</span> <span class="i">fillOne</span> (<span class="i">job</span><span class="o">:</span> <span class="i">Job</span>) (<span class="i">bitizens</span><span class="o">:</span> <span class="i">Bitizen</span> <span onmouseout="hideTip(event, 'fs12', 27)" onmouseover="showTip(event, 'fs12', 27)" class="i">list</span>) <span class="i">filter</span> <span class="o">=</span>
+        <span class="k">let</span> <span class="i">matches</span>, <span class="i">rest</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs13', 28)" onmouseover="showTip(event, 'fs13', 28)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs14', 29)" onmouseover="showTip(event, 'fs14', 29)" class="i">partition</span> (<span class="k">fun</span> <span class="i">b</span> <span class="k">-&gt;</span> <span class="i">filter</span> <span class="i">job</span> <span class="i">b</span>) <span class="i">bitizens</span>
+        <span class="k">let</span> <span class="i">sortedMatches</span> <span class="o">=</span> <span class="i">matches</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 30)" onmouseover="showTip(event, 'fs13', 30)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs15', 31)" onmouseover="showTip(event, 'fs15', 31)" class="i">sortBy</span> (<span class="k">fun</span> <span class="i">b</span> <span class="k">-&gt;</span> <span class="i">b</span><span class="o">.</span><span class="i">SortValueFor</span> <span class="i">job</span><span class="o">.</span><span class="i">Color</span>)
+        <span class="k">match</span> <span class="i">sortedMatches</span> <span class="k">with</span>
+        | [] <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs16', 32)" onmouseover="showTip(event, 'fs16', 32)" class="i">None</span>, <span class="i">bitizens</span>
+        | <span class="i">head</span><span class="o">::</span><span class="i">tail</span>  <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs17', 33)" onmouseover="showTip(event, 'fs17', 33)" class="i">Some</span> { <span class="i">Job</span> <span class="o">=</span> <span class="i">job</span>; <span class="i">Employee</span> <span class="o">=</span> <span class="i">head</span> }, <span class="i">tail</span><span class="o">@</span><span class="i">rest</span>
+    <span class="k">let</span> <span class="k">rec</span> <span class="i">fillPositionsInner</span> (<span class="i">jobs</span><span class="o">:</span> <span class="i">Job</span> <span onmouseout="hideTip(event, 'fs12', 34)" onmouseover="showTip(event, 'fs12', 34)" class="i">list</span>) (<span class="i">bitizens</span><span class="o">:</span> <span class="i">Bitizen</span> <span onmouseout="hideTip(event, 'fs12', 35)" onmouseover="showTip(event, 'fs12', 35)" class="i">list</span>) (<span class="i">positions</span><span class="o">:</span> <span class="i">Position</span> <span onmouseout="hideTip(event, 'fs12', 36)" onmouseover="showTip(event, 'fs12', 36)" class="i">list</span>) <span class="o">=</span>
+        <span class="k">match</span> <span class="i">jobs</span> <span class="k">with</span>
+        | [] <span class="k">-&gt;</span> <span class="i">positions</span>, <span class="i">bitizens</span>
+        | <span class="i">head</span><span class="o">::</span><span class="i">tail</span> <span class="k">-&gt;</span> <span class="k">match</span> <span class="i">fillOne</span> <span class="i">head</span> <span class="i">bitizens</span> <span class="i">filter</span> <span class="k">with</span>
+                        | <span onmouseout="hideTip(event, 'fs16', 37)" onmouseover="showTip(event, 'fs16', 37)" class="i">None</span>, <span class="i">b</span> <span class="k">-&gt;</span> <span class="i">fillPositionsInner</span> <span class="i">tail</span> <span class="i">b</span> (<span class="i">positions</span>)
+                        | <span onmouseout="hideTip(event, 'fs17', 38)" onmouseover="showTip(event, 'fs17', 38)" class="i">Some</span> <span class="i">p</span>, <span class="i">b</span> <span class="k">-&gt;</span> <span class="i">fillPositionsInner</span> <span class="i">tail</span> <span class="i">b</span> (<span class="i">p</span><span class="o">::</span><span class="i">positions</span>)
+    <span class="i">fillPositionsInner</span> <span class="i">jobs</span> <span class="i">bitizens</span> []
+</pre>
+</td>
+</tr>
+</table>
+
+<p>This function contains two other functions, <code>fillOne</code> and <code>fillPositionsInner</code>. The latter takes the first job and then uses <code>fillOne</code> to find the most suitable bitizen. Apart from the jobs- and bitizen lists a filter argument is also required, more on this soon. <code>fillOne</code> sorts the bitizen list according to "best for the requested skill", if the bitizen list is empty then a tuple <code>None * Bitizen list</code> is returned, otherwise <code>Some(Position) * Bitizen list</code>, where the second position holds the remaining unassigned bitizens, is returned.</p>
+
+<h2>Program Start</h2>
+
+<p>The program is started using this function:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+<span class="l">19: </span>
+<span class="l">20: </span>
+<span class="l">21: </span>
+<span class="l">22: </span>
+<span class="l">23: </span>
+<span class="l">24: </span>
+<span class="l">25: </span>
+<span class="l">26: </span>
+<span class="l">27: </span>
+<span class="l">28: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+[&lt;<span onmouseout="hideTip(event, 'fs18', 39)" onmouseover="showTip(event, 'fs18', 39)" class="i">EntryPoint</span>&gt;]
+<span class="k">let</span> <span class="i">main</span> <span class="i">argv</span> <span class="o">=</span>
+    <span class="k">let</span> <span class="i">jobs</span> <span class="o">=</span> 
+        (<span class="k">new</span> <span class="i">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;shops.csv&quot;</span><span class="o">&gt;</span>())<span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 40)" onmouseover="showTip(event, 'fs19', 40)" class="i">Data</span>
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs20', 41)" onmouseover="showTip(event, 'fs20', 41)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs21', 42)" onmouseover="showTip(event, 'fs21', 42)" class="i">map</span> (<span class="k">fun</span> <span class="i">r</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs22', 43)" onmouseover="showTip(event, 'fs22', 43)" class="i">seq</span> { <span class="k">for</span> <span class="i">i</span> <span class="k">in</span> <span class="n">1..</span><span class="n">3</span> <span class="k">-&gt;</span> { <span class="i">Name</span> <span class="o">=</span> <span class="i">r</span><span class="o">.</span><span class="i">Name</span>; <span class="i">Color</span> <span class="o">=</span> <span class="i">Color</span><span class="o">.</span><span class="i">Parse</span> <span class="i">r</span><span class="o">.</span><span class="i">Color</span> }})
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs20', 44)" onmouseover="showTip(event, 'fs20', 44)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs23', 45)" onmouseover="showTip(event, 'fs23', 45)" class="i">collect</span> (<span class="k">fun</span> <span class="i">o</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs22', 46)" onmouseover="showTip(event, 'fs22', 46)" class="i">seq</span> { <span class="k">yield!</span> <span class="i">o</span> })
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 47)" onmouseover="showTip(event, 'fs13', 47)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs24', 48)" onmouseover="showTip(event, 'fs24', 48)" class="i">ofSeq</span>
+
+    <span class="k">let</span> <span class="i">bitizens</span> <span class="o">=</span> 
+        (<span class="k">new</span> <span class="i">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;bitizens.csv&quot;</span><span class="o">&gt;</span>())<span class="o">.</span><span onmouseout="hideTip(event, 'fs19', 49)" onmouseover="showTip(event, 'fs19', 49)" class="i">Data</span>
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs20', 50)" onmouseover="showTip(event, 'fs20', 50)" class="i">Seq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs21', 51)" onmouseover="showTip(event, 'fs21', 51)" class="i">map</span>
+            (<span class="k">fun</span> <span class="i">r</span> <span class="k">-&gt;</span>
+                <span class="i">Bitizen</span>(<span class="i">r</span><span class="o">.</span><span class="i">Name</span>, <span class="i">r</span><span class="o">.</span><span class="i">DreamJob</span>, 
+                    [| 
+                        <span class="i">Skill</span>(<span class="i">Color</span><span class="o">.</span><span class="i">Blue</span>, <span class="i">r</span><span class="o">.</span><span class="i">Blue</span>);
+                        <span class="i">Skill</span>(<span class="i">Color</span><span class="o">.</span><span class="i">Green</span>, <span class="i">r</span><span class="o">.</span><span class="i">Green</span>);
+                        <span class="i">Skill</span>(<span class="i">Color</span><span class="o">.</span><span class="i">Orange</span>, <span class="i">r</span><span class="o">.</span><span class="i">Orange</span>);
+                        <span class="i">Skill</span>(<span class="i">Color</span><span class="o">.</span><span class="i">Purple</span>, <span class="i">r</span><span class="o">.</span><span class="i">Purple</span>);
+                        <span class="i">Skill</span>(<span class="i">Color</span><span class="o">.</span><span class="i">Yellow</span>, <span class="i">r</span><span class="o">.</span><span class="i">Yellow</span>)
+                    |]))
+        <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 52)" onmouseover="showTip(event, 'fs13', 52)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs24', 53)" onmouseover="showTip(event, 'fs24', 53)" class="i">ofSeq</span>
+
+    <span class="k">let</span> <span class="i">dreamPositions</span>, <span class="i">bitizens</span> <span class="o">=</span> <span class="i">fillPositions</span> (<span class="k">fun</span> <span class="i">j</span> <span class="i">b</span> <span class="k">-&gt;</span> <span class="i">j</span><span class="o">.</span><span class="i">Name</span><span class="o">.</span><span class="i">ciCompare</span>(<span class="i">b</span><span class="o">.</span><span class="i">DreamJob</span>)) <span class="i">jobs</span> <span class="i">bitizens</span>
+    <span class="k">let</span> <span class="i">normalPositions</span>, <span class="i">bitizens</span> <span class="o">=</span> <span class="i">fillPositions</span> (<span class="k">fun</span> <span class="i">j</span> <span class="i">b</span> <span class="k">-&gt;</span> <span class="k">true</span>) <span class="i">jobs</span> <span class="i">bitizens</span>
+
+    <span class="i">File</span><span class="o">.</span><span class="i">WriteAllLines</span>(<span class="s">&quot;positions.txt&quot;</span>, <span class="i">dreamPositions</span><span class="o">@</span><span class="i">normalPositions</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs13', 54)" onmouseover="showTip(event, 'fs13', 54)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs25', 55)" onmouseover="showTip(event, 'fs25', 55)" class="i">map</span> (<span class="k">fun</span> <span class="i">p</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs4', 56)" onmouseover="showTip(event, 'fs4', 56)" class="i">string</span> <span class="i">p</span>))
+
+    <span class="n">0</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>It reads two csv files using the <a href="http://fsharp.github.io/FSharp.Data/library/CsvProvider.html">csv type provider</a> and from this creates the types we need (oh, and type providers are the greatest thing ever). The available jobs list is created by making three jobs for each business. Next we need to fill positions by calling the <code>fillPositions</code> function. This is done twice, first by using a filter function that matches dream jobs, making sure that these are assigned first, then once more for the remaining bitizens. One last note on this function, as you can see there is a string method <code>ciCompare</code> in the dream positions filter function. This is simply an extension function on the string type which is defined as:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs9', 57)" onmouseover="showTip(event, 'fs9', 57)" class="i">String</span> <span class="k">with</span>
+    <span class="k">member</span> <span class="i">this</span><span class="o">.</span><span class="i">ciCompare</span> <span class="i">other</span> <span class="o">=</span>
+        <span onmouseout="hideTip(event, 'fs26', 58)" onmouseover="showTip(event, 'fs26', 58)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs27', 59)" onmouseover="showTip(event, 'fs27', 59)" class="i">String</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs28', 60)" onmouseover="showTip(event, 'fs28', 60)" class="i">Equals</span>(<span class="i">this</span>, <span class="i">other</span>, <span class="i">StringComparison</span><span class="o">.</span><span class="i">InvariantCultureIgnoreCase</span>)
+</pre>
+</td>
+</tr>
+</table>
+
+<h2>Source</h2>
+
+<p>You can find the full source as a Visual Studio solution on my github account: <a href="https://github.com/andagr/SortTinyTowerWorkers"><a href="https://github.com/andagr/SortTinyTowerWorkers">https://github.com/andagr/SortTinyTowerWorkers</a></a></p>
+
+<h2>Final Note</h2>
+
+<p>I wrote this tool as an F# learning experience and I welcome any input on improvements on everything from the syntax to how this could be better modeled.</p>
+
+<div class="tip" id="fs1">val raise : exn:System.Exception -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.Operators.raise</div>
+<div class="tip" id="fs2">Multiple items<br />val int : value:&#39;T -&gt; int (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int<br /><br />--------------------<br />type int = int32<br /><br />Full name: Microsoft.FSharp.Core.int<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; = int<br /><br />Full name: Microsoft.FSharp.Core.int&lt;_&gt;</div>
+<div class="tip" id="fs3">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.sprintf</div>
+<div class="tip" id="fs4">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = System.String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
+<div class="tip" id="fs5">module Array<br /><br />from Microsoft.FSharp.Collections</div>
+<div class="tip" id="fs6">val sumBy : projection:(&#39;T -&gt; &#39;U) -&gt; array:&#39;T [] -&gt; &#39;U (requires member ( + ) and member get_Zero)<br /><br />Full name: Microsoft.FSharp.Collections.Array.sumBy</div>
+<div class="tip" id="fs7">Multiple items<br />val decimal : value:&#39;T -&gt; decimal (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.decimal<br /><br />--------------------<br />type decimal = System.Decimal<br /><br />Full name: Microsoft.FSharp.Core.decimal<br /><br />--------------------<br />type decimal&lt;&#39;Measure&gt; = decimal<br /><br />Full name: Microsoft.FSharp.Core.decimal&lt;_&gt;</div>
+<div class="tip" id="fs8">val find : predicate:(&#39;T -&gt; bool) -&gt; array:&#39;T [] -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Collections.Array.find</div>
+<div class="tip" id="fs9">module String<br /><br />from Microsoft.FSharp.Core</div>
+<div class="tip" id="fs10">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; array:&#39;T [] -&gt; &#39;U []<br /><br />Full name: Microsoft.FSharp.Collections.Array.map</div>
+<div class="tip" id="fs11">val replicate : count:int -&gt; str:string -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.String.replicate</div>
+<div class="tip" id="fs12">type &#39;T list = List&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.list&lt;_&gt;</div>
+<div class="tip" id="fs13">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs14">val partition : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; &#39;T list * &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.partition</div>
+<div class="tip" id="fs15">val sortBy : projection:(&#39;T -&gt; &#39;Key) -&gt; list:&#39;T list -&gt; &#39;T list (requires comparison)<br /><br />Full name: Microsoft.FSharp.Collections.List.sortBy</div>
+<div class="tip" id="fs16">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs17">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs18">Multiple items<br />type EntryPointAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; EntryPointAttribute<br /><br />Full name: Microsoft.FSharp.Core.EntryPointAttribute<br /><br />--------------------<br />new : unit -&gt; EntryPointAttribute</div>
+<div class="tip" id="fs19">namespace Microsoft.FSharp.Data</div>
+<div class="tip" id="fs20">module Seq<br /><br />from Microsoft.FSharp.Collections</div>
+<div class="tip" id="fs21">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.map</div>
+<div class="tip" id="fs22">Multiple items<br />val seq : sequence:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.Operators.seq<br /><br />--------------------<br />type seq&lt;&#39;T&gt; = System.Collections.Generic.IEnumerable&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Collections.seq&lt;_&gt;</div>
+<div class="tip" id="fs23">val collect : mapping:(&#39;T -&gt; #seq&lt;&#39;U&gt;) -&gt; source:seq&lt;&#39;T&gt; -&gt; seq&lt;&#39;U&gt;<br /><br />Full name: Microsoft.FSharp.Collections.Seq.collect</div>
+<div class="tip" id="fs24">val ofSeq : source:seq&lt;&#39;T&gt; -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.ofSeq</div>
+<div class="tip" id="fs25">val map : mapping:(&#39;T -&gt; &#39;U) -&gt; list:&#39;T list -&gt; &#39;U list<br /><br />Full name: Microsoft.FSharp.Collections.List.map</div>
+<div class="tip" id="fs26">namespace System</div>
+<div class="tip" id="fs27">Multiple items<br />type String =<br />&#160;&#160;new : value:char -&gt; string + 7 overloads<br />&#160;&#160;member Chars : int -&gt; char<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CompareTo : value:obj -&gt; int + 1 overload<br />&#160;&#160;member Contains : value:string -&gt; bool<br />&#160;&#160;member CopyTo : sourceIndex:int * destination:char[] * destinationIndex:int * count:int -&gt; unit<br />&#160;&#160;member EndsWith : value:string -&gt; bool + 2 overloads<br />&#160;&#160;member Equals : obj:obj -&gt; bool + 2 overloads<br />&#160;&#160;member GetEnumerator : unit -&gt; CharEnumerator<br />&#160;&#160;member GetHashCode : unit -&gt; int<br />&#160;&#160;...<br /><br />Full name: System.String<br /><br />--------------------<br />System.String(value: nativeptr&lt;char&gt;) : unit<br />System.String(value: nativeptr&lt;sbyte&gt;) : unit<br />System.String(value: char []) : unit<br />System.String(c: char, count: int) : unit<br />System.String(value: nativeptr&lt;char&gt;, startIndex: int, length: int) : unit<br />System.String(value: nativeptr&lt;sbyte&gt;, startIndex: int, length: int) : unit<br />System.String(value: char [], startIndex: int, length: int) : unit<br />System.String(value: nativeptr&lt;sbyte&gt;, startIndex: int, length: int, enc: System.Text.Encoding) : unit</div>
+<div class="tip" id="fs28">System.String.Equals(a: string, b: string) : bool<br />System.String.Equals(a: string, b: string, comparisonType: System.StringComparison) : bool</div>
+
+</div>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'includebrain'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            <div id="right-panel" class="col-md-4">
+                <div id="tag-cloud">
+                        <a class="tag tag-unselected" data-postcount="3" href='http://andagr.github.io/Firm/blog/archive?tag=learning'>learning</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=stemming'>stemming</a>
+                        <a class="tag tag-unselected" data-postcount="3" href='http://andagr.github.io/Firm/blog/archive?tag=f%23'>f#</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=java'>java</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=functional-programming'>functional-programming</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=c%23'>c#</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=configuration'>configuration</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=code'>code</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=log4net'>log4net</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=logging'>logging</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=xml'>xml</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=blog'>blog</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=hello'>hello</a>
+                </div>
+                <div id="latest-posts">
+                    <h3>Latest posts</h3>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/another-porter-stemmer-in-fsharp/'>Another Porter Stemmer in F#</a>
+                            <br/>
+                            <small>2014-04-20 22:30:47</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp/'>Helping Bitizens to Better Jobs in Tiny Tower Using F#</a>
+                            <br/>
+                            <small>2014-03-17 11:27:23</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/learning-fsharp/'>Learning F#</a>
+                            <br/>
+                            <small>2014-01-04 19:16:39</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/configuring-log4net-programmatically/'>Configuring Log4Net programmatically</a>
+                            <br/>
+                            <small>2013-11-12 23:20:27</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/hello/'>Hello</a>
+                            <br/>
+                            <small>2013-07-27 21:22:35</small>
+                        </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="row">
+            <div class="col-md-4">
+                <p>This site is generated with <a href="https://github.com/andagr/Firm">Firm</a> and hosted on <a href="https://github.com/andagr/Firm">Github</a>.</p>
+                <p>By <a href="https://github.com/andagr">Andreas Ågren</a>.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <a href="https://github.com/andagr/Firm">
+        <img style="position: absolute; top: 50px; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+    </a>
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/ie10-viewport-bug-workaround.js'></script>
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/FSharp.Formatting/tips.js'></script>
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/netext.js'></script>
+</body>
+</html>

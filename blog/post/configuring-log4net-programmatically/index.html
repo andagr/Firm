@@ -1,0 +1,317 @@
+
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Ramblings by a developer">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Include Brain</title>
+    <link rel="shortcut icon" href='http://andagr.github.io/Firm/favicon.png'>
+    <link rel="alternate" type="application/rss+xml" title="Include Brain" href='http://andagr.github.io/Firm/blog/rss.xml' />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href='http://andagr.github.io/Firm/css/FSharp.Formatting/styles/style.css'>
+    <link rel="stylesheet" href='http://andagr.github.io/Firm/css/firm.css'>
+    <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href='http://andagr.github.io/Firm/'>Include Brain</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class=""><a href='http://andagr.github.io/Firm/blog/about'>About</a></li>
+                    <li class=""><a href='http://andagr.github.io/Firm/blog/archive'>Archive</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="topsection" class="jumbotron">
+        <div class="container">
+            <h1><a href='http://andagr.github.io/Firm/'>Include Brain</a></h1>
+            <p>Ramblings by a developer</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div id="main-panel" class="col-md-8">
+                
+
+
+<div class="post">
+    <h1 class="post-title">Configuring Log4Net programmatically</h1>
+    <small>2013-11-12 23:20:27</small>
+    <div class="post-content"><p><a href="http://logging.apache.org/log4net/">Log4Net</a> is a widely used logging framework by Apache, who ported it from log4j, also made by Apache. It can be configured for a number of different things, such as where to output the logs and how to format the log text.</p>
+
+<p>Using Log4Net is quite easy once the configuration has been completed, and here is a common way of doing just that (using a file appender as an example).</p>
+
+<p>Create a file called log4net.config and add the following content:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="o">&lt;</span><span class="i">log4net</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="i">appender</span> <span class="i">name</span><span class="o">=</span><span class="s">&quot;FileAppender&quot;</span> <span class="k">type</span><span class="o">=</span><span class="s">&quot;log4net.Appender.FileAppender&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="i">file</span> <span class="i">value</span><span class="o">=</span><span class="s">&quot;log.txt&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="i">encoding</span> <span class="i">value</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="i">layout</span> <span class="k">type</span><span class="o">=</span><span class="s">&quot;log4net.Layout.PatternLayout&quot;</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="i">conversionPattern</span> <span class="i">value</span><span class="o">=</span><span class="s">&quot;%date %-5level %logger - %message%newline&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="i">layout</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="i">appender</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="i">root</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="i">level</span> <span class="i">value</span><span class="o">=</span><span class="s">&quot;DEBUG&quot;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="i">appender</span><span class="o">-</span><span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">ref</span> <span onmouseout="hideTip(event, 'fs1', 2)" onmouseover="showTip(event, 'fs1', 2)" class="i">ref</span><span class="o">=</span><span class="s">&quot;FileAppender&quot;</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="i">root</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="i">log4net</span><span class="o">&gt;</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>Then add the following line in the startup process of your application:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="i">XmlConfigurator</span><span class="o">.</span><span class="i">Configure</span>( <span class="s">&quot;log4net.config&quot;</span> );
+</pre>
+</td>
+</tr>
+</table>
+
+<p>You may also place the xml configuration in the App.config and then instead of the above method call, add the following section to the configuration element:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="o">&lt;</span><span class="i">configSections</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="i">section</span> <span class="i">name</span><span class="o">=</span><span class="s">&quot;log4net&quot;</span> <span class="k">type</span><span class="o">=</span><span class="s">&quot;log4net.Config.Log4NetConfigurationSectionHandler, log4net&quot;</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="i">configSections</span><span class="o">&gt;</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>Usually this is easy enough, however there might be cases where one can not, or simply do not want to, configure the logging in an external file, which is a perfectly understandable requirement. For these situations the following approach can be used.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+<span class="l">11: </span>
+<span class="l">12: </span>
+<span class="l">13: </span>
+<span class="l">14: </span>
+<span class="l">15: </span>
+<span class="l">16: </span>
+<span class="l">17: </span>
+<span class="l">18: </span>
+<span class="l">19: </span>
+<span class="l">20: </span>
+<span class="l">21: </span>
+<span class="l">22: </span>
+<span class="l">23: </span>
+<span class="l">24: </span>
+<span class="l">25: </span>
+<span class="l">26: </span>
+<span class="l">27: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">class</span> <span class="i">Logger</span>
+{
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="i">ConfigureFileAppender</span>( <span onmouseout="hideTip(event, 'fs2', 3)" onmouseover="showTip(event, 'fs2', 3)" class="i">string</span> <span class="i">logFile</span> )
+    {
+        <span class="i">var</span> <span class="i">fileAppender</span> <span class="o">=</span> <span class="i">GetFileAppender</span>( <span class="i">logFile</span> );
+        <span class="i">BasicConfigurator</span><span class="o">.</span><span class="i">Configure</span>( <span class="i">fileAppender</span> );
+        ( ( <span class="i">Hierarchy</span> ) <span class="i">LogManager</span><span class="o">.</span><span class="i">GetRepository</span>() )<span class="o">.</span><span class="i">Root</span><span class="o">.</span><span class="i">Level</span> <span class="o">=</span> <span class="i">Level</span><span class="o">.</span><span class="i">Debug</span>;
+    }
+
+    <span class="k">private</span> <span class="k">static</span> <span class="i">IAppender</span> <span class="i">GetFileAppender</span>( <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="i">string</span> <span class="i">logFile</span> )
+    {
+        <span class="i">var</span> <span class="i">layout</span> <span class="o">=</span> <span class="k">new</span> <span class="i">PatternLayout</span>( <span class="s">&quot;%date %-5level %logger - %message%newline&quot;</span> );
+        <span class="i">layout</span><span class="o">.</span><span class="i">ActivateOptions</span>(); <span class="c">// According to the docs this must be called as soon as any properties have been changed.</span>
+
+        <span class="i">var</span> <span class="i">appender</span> <span class="o">=</span> <span class="k">new</span> <span class="i">FileAppender</span>
+            {
+                <span class="i">File</span> <span class="o">=</span> <span class="i">logFile</span>,
+                <span class="i">Encoding</span> <span class="o">=</span> <span class="i">Encoding</span><span class="o">.</span><span class="i">UTF8</span>,
+                <span class="i">Threshold</span> <span class="o">=</span> <span class="i">Level</span><span class="o">.</span><span class="i">Debug</span>,
+                <span class="i">Layout</span> <span class="o">=</span> <span class="i">layout</span>
+            };
+
+        <span class="i">appender</span><span class="o">.</span><span class="i">ActivateOptions</span>();
+
+        <span class="k">return</span> <span class="i">appender</span>;
+    }
+}
+</pre>
+</td>
+</tr>
+</table>
+
+<p>Simply add the above class, and then use it like this:</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">class</span> <span class="i">Program</span>
+{
+    <span class="k">private</span> <span class="k">static</span> <span class="i">readonly</span> <span class="i">ILog</span> <span class="i">Log</span> <span class="o">=</span> <span class="i">LogManager</span><span class="o">.</span><span class="i">GetLogger</span>( <span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="i">typeof</span> ( <span class="i">Program</span> ) );
+
+    <span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="i">Main</span>( <span onmouseout="hideTip(event, 'fs2', 6)" onmouseover="showTip(event, 'fs2', 6)" class="i">string</span>[] <span class="i">args</span> )
+    {
+        <span class="i">Logger</span><span class="o">.</span><span class="i">ConfigureFileAppender</span>( <span class="s">&quot;log.txt&quot;</span> ); <span class="c">// This only has to be called once.</span>
+        <span class="i">Log</span><span class="o">.</span><span class="i">Info</span>( <span class="s">&quot;This is not a log line.&quot;</span> );
+    }
+}
+</pre>
+</td>
+</tr>
+</table>
+
+<p>That's it, it's easy when you know it. I hope someone finds it useful.</p>
+
+<div class="tip" id="fs1">Multiple items<br />val ref : value:&#39;T -&gt; &#39;T ref<br /><br />Full name: Microsoft.FSharp.Core.Operators.ref<br /><br />--------------------<br />type &#39;T ref = Ref&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.ref&lt;_&gt;</div>
+<div class="tip" id="fs2">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = System.String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
+<div class="tip" id="fs3">val typeof&lt;&#39;T&gt; : System.Type<br /><br />Full name: Microsoft.FSharp.Core.Operators.typeof</div>
+
+</div>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'includebrain'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            <div id="right-panel" class="col-md-4">
+                <div id="tag-cloud">
+                        <a class="tag tag-unselected" data-postcount="3" href='http://andagr.github.io/Firm/blog/archive?tag=learning'>learning</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=stemming'>stemming</a>
+                        <a class="tag tag-unselected" data-postcount="3" href='http://andagr.github.io/Firm/blog/archive?tag=f%23'>f#</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=java'>java</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=functional-programming'>functional-programming</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=c%23'>c#</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=configuration'>configuration</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=code'>code</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=log4net'>log4net</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=logging'>logging</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=xml'>xml</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=blog'>blog</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=hello'>hello</a>
+                </div>
+                <div id="latest-posts">
+                    <h3>Latest posts</h3>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/another-porter-stemmer-in-fsharp/'>Another Porter Stemmer in F#</a>
+                            <br/>
+                            <small>2014-04-20 22:30:47</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp/'>Helping Bitizens to Better Jobs in Tiny Tower Using F#</a>
+                            <br/>
+                            <small>2014-03-17 11:27:23</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/learning-fsharp/'>Learning F#</a>
+                            <br/>
+                            <small>2014-01-04 19:16:39</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/configuring-log4net-programmatically/'>Configuring Log4Net programmatically</a>
+                            <br/>
+                            <small>2013-11-12 23:20:27</small>
+                        </h4>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/hello/'>Hello</a>
+                            <br/>
+                            <small>2013-07-27 21:22:35</small>
+                        </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="row">
+            <div class="col-md-4">
+                <p>This site is generated with <a href="https://github.com/andagr/Firm">Firm</a> and hosted on <a href="https://github.com/andagr/Firm">Github</a>.</p>
+                <p>By <a href="https://github.com/andagr">Andreas Ågren</a>.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <a href="https://github.com/andagr/Firm">
+        <img style="position: absolute; top: 50px; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+    </a>
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/ie10-viewport-bug-workaround.js'></script>
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/FSharp.Formatting/tips.js'></script>
+    <script type="text/javascript" src='http://andagr.github.io/Firm/js/netext.js'></script>
+</body>
+</html>
