@@ -44,24 +44,8 @@ goto :end
 
 :regenerate
 if exist output (
-    if exist output\.git (
-        echo Backing up .git and removing output...
-        if exist output-temp (
-            echo Error! The directory output-temp already exists, please remove it manually before retrying regenerate.
-            goto :end
-        )
-        md output-temp\.git
-        xcopy output\.git output-temp\.git /E /H /Q /K
-        rd /s /q output
-        echo Restoring output\.git...
-        md output\.git
-        xcopy output-temp\.git output\.git /E /H /Q /K
-        rd /s /q output-temp
-    ) else (
-        echo Removing output...
-        rd /s /q output
-    )
-    echo Done!
+    packages\FAKE\tools\FAKE.exe fake.fsx RegenerateClean
+    if not errorlevel 0 goto :end
 )
 :generate
 if not exist bin call :build build
