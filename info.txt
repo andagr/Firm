@@ -1,2 +1,0 @@
-Cloning gh-pages branch into output:
-git clone -b gh-pages https://github.com/andagr/Firm.git output
