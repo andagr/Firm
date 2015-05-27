@@ -229,7 +229,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# Custom
-output/
-data/
