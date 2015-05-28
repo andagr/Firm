@@ -1,12 +1,12 @@
 {
     "baseUrl": "http://andagr.github.io/Firm",
-    "disqusShortname": "includebrain",
+    "disqusShortname": "firmblog",
     "rss": {
-        "title": "Include Brain",
-        "description": "Ramblings of a developer",
+        "title": "Firm",
+        "description": "A blog-aware, static site generator in F#",
         "language": "en-us",
         "category": "Software Development",
-        "managingEditor": "andreas@includebrain.com",
-        "webMaster": "andreas@includebrain.com"
+        "managingEditor": "bandagr@gmail.com",
+        "webMaster": "bandagr@gmail.com"
     }
 }
