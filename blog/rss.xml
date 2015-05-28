@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
   <channel>
-    <title>Include Brain</title>
+    <title>Firm</title>
     <link>http://andagr.github.io/Firm</link>
-    <description>Ramblings of a developer</description>
+    <description>A blog-aware, static site generator in F#</description>
     <language>en-us</language>
     <category>Software Development</category>
-    <managingEditor>andreas@includebrain.com</managingEditor>
-    <webMaster>andreas@includebrain.com</webMaster>
+    <managingEditor>bandagr@gmail.com</managingEditor>
+    <webMaster>bandagr@gmail.com</webMaster>
     <item>
       <title>Another Porter Stemmer in F#</title>
       <link>http://andagr.github.io/Firm/blog/post/another-porter-stemmer-in-fsharp</link>

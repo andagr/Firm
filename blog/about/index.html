@@ -50,27 +50,165 @@
 
 
 <div>
-    <h1>Hello,</h1>
+    <h1>About</h1>
 
-<p>My name is Andreas Ågren and I'm a developer from Malmö in south Sweden, where I live with my wife and son.</p>
+<p>Firm is a blog-aware, static site generator written in <a href="http://fsharp.org">F#</a>.</p>
 
-<p>I work at <a href="http://www.apptus.com">Apptus Technologies AB</a> with web development, API:s and integration.
-By day I mostly work with C#, Javascript, Java, AngularJS, ASP.NET and SQL Server. By night I'm currently learning F#.</p>
+<h1>Features</h1>
 
-<p>I am very passionate about software development and I love learning, reading about and practicing it.</p>
+<p>It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archive. Templates are written in <a href="https://github.com/Antaris/RazorEngine">Razor</a>. Posts and pages are written in <a href="http://daringfireball.net/projects/markdown/">Markdown</a>.</p>
 
-<h1>Contact</h1>
+<h1>Getting started</h1>
 
-<p>There are a couple of different ways to contact me:</p>
+<ol>
+<li>Fork the project at <a href="https://github.com/andagr/Firm.">https://github.com/andagr/Firm.</a></li>
+<li>Clone it to a local directory.</li>
+<li>Create the folders <code>data\templates\razor</code> and add the following template files. The names should hint at what they should do, and if you need some inspiration then look in the <a href="https://github.com/andagr/Firm/tree/data">data branch of this repo</a>.
 
-<p><div id="contact-images">
-    <a href="mailto:andreas@includebrain.com" alt="Email"><img src="../../img/Mail.png"></a>
-    <a href="https://github.com/andagr" alt="Github"><img src="../../img/Github.png"></a>
-    <a href="https://twitter.com/andreas_agren" alt="Twitter"><img src="../../img/Twitter alt 2.png"></a>
-    <a href="https://www.linkedin.com/in/andreasagren" alt="LinkedIn"><img src="../../img/Linked in alt.png"></a>
-</div>
-<small id="contact-images-credit">Icons from <a href="http://dakirby309.deviantart.com/art/Metro-UI-Icon-Set-725-Icons-280724102">Metro UI Icon Set</a></small></p>
+     archive.cshtml
+     index.cshtml
+     page.cshtml
+     post.cshtml
+     _layout.cshtml</li>
+</ol>
 
+<h2>Creating your first blog post</h2>
+
+<ol>
+<li><p>To write your first blog post, create the directory <code>data\input\blog\post\&lt;name-of-blog-post&gt;</code> and add the following files:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ <span class="i">index</span><span class="o">.</span><span class="i">md</span>
+ <span class="i">meta</span><span class="o">.</span><span class="i">json</span>
+</pre>
+</td>
+</tr>
+</table></li>
+<li><p>Open meta.json and add data about the post, example:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+<span class="l">4: </span>
+<span class="l">5: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ {
+     <span class="s">&quot;title&quot;</span><span class="o">:</span> <span class="s">&quot;Hello&quot;</span>,
+     <span class="s">&quot;date&quot;</span><span class="o">:</span> <span class="s">&quot;2015-05-28 21:14:00&quot;</span>,
+     <span class="s">&quot;tags&quot;</span><span class="o">:</span> [ <span class="s">&quot;blog&quot;</span>, <span class="s">&quot;hello&quot;</span> ]
+ }
+</pre>
+</td>
+</tr>
+</table></li>
+<li>Open <code>index.md</code> in your favorite Markdown editor and write a post.</li>
+<li>Open <code>config.json</code> in the Firm root directory and change <code>baseUrl</code> to <code>http://locahost:8080</code>. Also take this moment and change the other settings to your liking.</li>
+<li>Open a console in the root directory of Firm and type: <code>firm generate</code>. Dependencies should now be downloaded, project built and web site generated into the folder <code>output</code>.</li>
+<li>In the console, run <code>firm preview</code>, verify that the site looks good and then hit <code>[Enter]</code> in the console to exit preview mode.</li>
+<li>Open <code>config.json</code> again and change <code>baseUrl</code> to the root url of your site, if it's on GitHub Pages (see publishing below) then it's most likely <a href="http://(user).github.io/Firm.">http://(user).github.io/Firm.</a></li>
+<li>Open a console in the root directory of Firm and run <code>firm regenerate</code>. Please note that it's <code>regenerate</code>, not <code>generate</code>, Firm will only generate new content for the latter command, and we want to generate everything again to make sure that url's are updated correctly.</li>
+<li><strong>Don't forget to add, commit and push the changes to your repository.</strong>
+<ul>
+<li>The <code>data</code> folder is ignored by default, you can open <code>.gitignore</code> and remove the entry, it's at the very bottom of the file.</li>
+<li>The <code>output</code> folder is also ignored by default, you can either remove the entry or follow the instructions for publishing to GitHub Pages below.</li>
+</ul></li>
+</ol>
+
+<h2>Publishing to GitHub Pages</h2>
+
+<p>There are <a href="https://www.google.com/search?q=static+website+hosting">many different hosts for static websites</a>, but in this guide I will refer to <a href="https://pages.github.com/">GitHub Pages</a>. Please note that in this case I refer to GitHub Pages for project sites.</p>
+
+<h3>One time setup</h3>
+
+<ol>
+<li><p>Open a console in the root directory of Firm and create a new branch:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ <span class="i">git</span> <span class="i">branch</span> <span class="i">gh</span><span class="o">-</span><span class="i">pages</span>
+ <span class="i">git</span> <span class="i">checkout</span> <span class="i">gh</span><span class="o">-</span><span class="i">pages</span>
+</pre>
+</td>
+</tr>
+</table></li>
+<li>Delete everything except the <code>output</code> directory.</li>
+<li>Move the content of the <code>output</code> directory to the root directory of Firm.</li>
+<li>Delete the now empty <code>output</code> directory.</li>
+<li><p>Stage, commit and publish/push the changes:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ <span class="i">git</span> <span class="i">add</span> <span class="o">-</span><span class="i">A</span> <span class="o">*</span>
+ <span class="i">git</span> <span class="i">commit</span> <span class="o">-</span><span class="i">m</span> <span class="s">&quot;Created first blog post!&quot;</span>
+ <span class="i">git</span> <span class="i">push</span> <span class="o">--</span><span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">set</span><span class="o">-</span><span class="i">upstream</span> <span class="i">origin</span> <span class="i">gh</span><span class="o">-</span><span class="i">pages</span>
+</pre>
+</td>
+</tr>
+</table></li>
+<li><p>Switch back to the master branch:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ <span class="i">git</span> <span class="i">checkout</span> <span class="i">master</span>
+</pre>
+</td>
+</tr>
+</table></li>
+<li><p>Now here's the trick, we want to store the <code>gh-pages</code> branch in the <code>output</code> directory, so that when we create a new post we can simply move into that directory and push the changes directly to the correct branch. In a console in the root directory of Firm, clone the <code>gh-pages</code> branch into the <code>output</code> directory:</p>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+ <span class="i">git</span> <span class="i">clone</span> <span class="o">-</span><span class="i">b</span> <span class="i">gh</span><span class="o">-</span><span class="i">pages</span> <span class="i">https</span><span class="o">:</span><span class="c">//github.com/(user)/Firm.git output</span>
+</pre>
+</td>
+</tr>
+</table></li>
+</ol>
+
+<h3>Creating a repeatable workflow</h3>
+
+<ol>
+<li>Add or edit a post or page.</li>
+<li>Change config.json:baseUrl to <a href="http://localhost:8080.">http://localhost:8080.</a></li>
+<li>Run <code>firm regenerate</code> to generate your site in the <code>output</code> folder.</li>
+<li>Run <code>firm preview</code> and verify that it looks ok.</li>
+<li>Change back config.json.</li>
+<li>Run <code>firm regenerate</code> again.</li>
+<li>Add, commit and push changes on both your <code>master</code> and <code>gh-pages</code> branches.</li>
+</ol>
+
+<p>You're done! All you have to do from now on is create content, verify that it looks ok and then push it to GitHub Pages.</p>
+
+<p>Happy blogging!</p>
+
+<h1>Thanks to</h1>
+
+<ul>
+<li><a href="https://github.com/fsprojects/FsBlog">FsBlog</a> - For the idea.</li>
+<li><a href="https://github.com/tpetricek/FSharp.Formatting">FSharp.Formatting</a> - Markdown parsing and code formatting.</li>
+<li><a href="https://github.com/Antaris/RazorEngine">RazorEngine</a> - Templates.</li>
+<li><a href="https://github.com/fsharp/FAKE">FAKE</a> - Building and general tool.</li>
+<li><a href="https://github.com/fsharp/FSharp.Data">FSharp.Data</a> - JSON parsing.</li>
+</ul>
+
+<div class="tip" id="fs1">val set : elements:seq&lt;&#39;T&gt; -&gt; Set&lt;&#39;T&gt; (requires comparison)<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.set</div>
 
 
 </div>
