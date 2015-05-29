@@ -7,13 +7,15 @@ It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archiv
 #Getting started
 1. Fork the project at https://github.com/andagr/Firm.
 2. Clone it to a local directory.
-3. Create the folders `data\templates\razor` and add the following template files. The names should hint at what they should do, and if you need some inspiration then look in the [data branch of this repo](https://github.com/andagr/Firm/tree/data).
+3. Create the folders `data\templates\razor` and add the following template files:
 
         archive.cshtml
         index.cshtml
         page.cshtml
         post.cshtml
         _layout.cshtml
+
+4. The names should hint at what they should do, and if you need some inspiration then look in the [data branch of this repo](https://github.com/andagr/Firm/tree/data).
 
 ##Creating your first blog post
 1. To write your first blog post, create the directory `data\input\blog\post\<name-of-blog-post>` and add the following files:
@@ -28,6 +30,7 @@ It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archiv
             "date": "2015-05-28 21:14:00",
             "tags": [ "blog", "hello" ]
         }
+
 3. Open `index.md` in your favorite Markdown editor and write a post.
 4. Open `config.json` in the Firm root directory and change `baseUrl` to `http://locahost:8080`. Also take this moment and change the other settings to your liking.
 5. Open a console in the root directory of Firm and type: `firm generate`. Dependencies should now be downloaded, project built and web site generated into the folder `output`.
@@ -46,6 +49,7 @@ There are [many different hosts for static websites](https://www.google.com/sear
 
         git branch gh-pages
         git checkout gh-pages
+
 2. Delete everything except the `output` directory.
 3. Move the content of the `output` directory to the root directory of Firm.
 4. Delete the now empty `output` directory.
@@ -54,9 +58,11 @@ There are [many different hosts for static websites](https://www.google.com/sear
         git add -A *
         git commit -m "Created first blog post!"
         git push --set-upstream origin gh-pages
+
 6. Switch back to the master branch:
 
         git checkout master
+
 7. Now here's the trick, we want to store the `gh-pages` branch in the `output` directory, so that when we create a new post we can simply move into that directory and push the changes directly to the correct branch. In a console in the root directory of Firm, clone the `gh-pages` branch into the `output` directory:
 
         git clone -b gh-pages https://github.com/(user)/Firm.git output
