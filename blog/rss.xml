@@ -9,571 +9,65 @@
     <managingEditor>bandagr@gmail.com</managingEditor>
     <webMaster>bandagr@gmail.com</webMaster>
     <item>
-      <title>Another Porter Stemmer in F#</title>
-      <link>http://andagr.github.io/Firm/blog/post/another-porter-stemmer-in-fsharp</link>
-      <description>&lt;h2&gt;Stemming&lt;/h2&gt;
+      <title>Welcome To Firm</title>
+      <link>http://andagr.github.io/Firm/blog/post/welcome-to-firm</link>
+      <description>&lt;h1&gt;Hello&lt;/h1&gt;
 
-&lt;p&gt;Stemming is the process for reducing words to their root form, e.g. both "acceptable" and "acceptance" might be reduced to "accept".&lt;/p&gt;
+&lt;p&gt;Firm is a blog-aware, static site generator written in &lt;a href="http://fsharp.org"&gt;F#&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;I'm working on a side project where I will have use for a stemmer, so I decided to look around a bit for a straight forward, and well explained, solution. Many resources seemed to point towards the &lt;a href="http://snowball.tartarus.org/algorithms/porter/stemmer.html"&gt;Porter Stemmer&lt;/a&gt;. This is an algorithm created by &lt;a href="http://tartarus.org/~martin/"&gt;Martin Porter&lt;/a&gt; and it works by setting up a few rules which are then, together with matching word endings, used for matching which words should be reduced to which stems.&lt;/p&gt;
+&lt;p&gt;It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archive. Templates are written in &lt;a href="https://github.com/Antaris/RazorEngine"&gt;Razor&lt;/a&gt;. Posts and pages are written in &lt;a href="http://daringfireball.net/projects/markdown/"&gt;Markdown&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Please note that as the title suggests, this is hardly the only F# solution. A search quickly reveals at least two others:&lt;/p&gt;
+&lt;h1&gt;Getting started&lt;/h1&gt;
 
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="http://blogs.msdn.com/b/christianb/archive/2011/06/24/a-porter-stemmer-in-f.aspx"&gt;A Porter Stemmer in F# - MSDN Blogs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://fwaris.wordpress.com/2012/10/30/porter-stemmer-in-f/"&gt;Porter Stemmer in F# | Faisal's space&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;You can find more information on how to get started with using Firm at the &lt;a href="http://github.com/andagr/Firm"&gt;GitHub repository&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Using the algorithm description, and by getting quite a lot of inspiration from Faisal's solution, I have put together my own implementation:&lt;/p&gt;
+&lt;h1&gt;Contributions&lt;/h1&gt;
 
-&lt;h2&gt;Type&lt;/h2&gt;
+&lt;p&gt;Pull requests are welcome! Please head over to &lt;a href="http://github.com/andagr/Firm"&gt;http://github.com/andagr/Firm&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;The only type in this implementation, it denotes either vowel or consonant:&lt;/p&gt;
+&lt;h1&gt;Example&lt;/h1&gt;
 
-&lt;pre&gt;&lt;code&gt;type private Kind =
-    | V
-    | C
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;Base Functions&lt;/h2&gt;
-
-&lt;p&gt;Here are a few helper functions which helps with converting a word to a list of vowels/consonants, group them so that e.g. VCCVC becomes VCVC and finally get the measurement of a word. The measurement is calculated by counting the number of VC pairs.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let private (|BaseV|_|) char =
-    match char with
-    | 'a' | 'e' | 'i' | 'o' | 'u' -&amp;gt; Some BaseV
-    | _ -&amp;gt; None
-
-let private kinds (word:string) =
-    let rec kinds chars =
-        match chars with
-        | [] -&amp;gt; []
-        | ['y'] -&amp;gt; [C]
-        | 'y'::t -&amp;gt; (kinds t |&amp;gt; List.head |&amp;gt; (function | V -&amp;gt; C | C -&amp;gt; V))::kinds t
-        | BaseV::t -&amp;gt; V::kinds t
-        | _::t -&amp;gt; C::kinds t
-    word |&amp;gt; Seq.toList |&amp;gt; List.rev |&amp;gt; kinds |&amp;gt; List.rev
-
-let private pack kinds =
-    kinds
-    |&amp;gt; List.fold
-        (fun kl k -&amp;gt; 
-            match k::kl with 
-            | [] -&amp;gt; [k]
-            | V::V::_ | C::C::_ -&amp;gt; kl
-            | _ -&amp;gt; k::kl) []
-    |&amp;gt; List.rev
-
-let rec private measurement kinds =
-    match kinds with
-    | [] -&amp;gt; 0
-    | V::C::t -&amp;gt; (measurement t) + 1
-    | h::t -&amp;gt; measurement t
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;Conditions and Rules&lt;/h2&gt;
-
-&lt;p&gt;Following this is a couple of functions that does the matching against the conditions and word suffixes as specified by the algorithm.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/// The stem ends with e.g. "s" or any letter/word. (*S in the Porter algorithm description.)
-let private (|Ends|_|) (s:string list) (word:string) =
-    match List.tryFind (fun s -&amp;gt; word.EndsWith(s)) s with
-    | Some s -&amp;gt; Some ((word.Substring(0, String.length word - String.length s)), s)
-    | None -&amp;gt; None
-
-let private ends s trunk =
-    match trunk with
-    | Ends s _ -&amp;gt; true
-    | _ -&amp;gt; false
-
-/// The stem ends with a double -and equal- consonant. (*d in the Porter algorithm description.)
-let private (|EndsDoubleC|_|) trunk =
-    match trunk |&amp;gt; kinds |&amp;gt; List.rev with
-    | C::C::_ when trunk.[String.length trunk - 2] = trunk.[String.length trunk - 1] -&amp;gt; Some ((trunk.Substring(0, String.length trunk - 2)), (trunk.Substring(String.length trunk - 2, 2)))
-    | _ -&amp;gt; None
-
-/// Calculates the measurement of a stem. (m in the Porter algorithm description.)
-let private m  =
-    kinds &amp;gt;&amp;gt; pack &amp;gt;&amp;gt; measurement
-
-/// The stem contains a vowel. (*v* in Porter algorithm description.)
-let private hasVowel trunk =
-    trunk |&amp;gt; kinds |&amp;gt; List.exists (fun k -&amp;gt; k = V)
-
-/// The word ends in CVC, where the second C (i.e. the last character) is not w, x or y. (*o in the Porter algorithm description.)
-let private (|EndsCVCNotWXY|_|) word =
-    match word with
-    | Ends ["w"; "x"; "y"] _ -&amp;gt; None
-    | t -&amp;gt;
-        match t |&amp;gt; kinds |&amp;gt; List.rev with
-        | C::V::C::_ -&amp;gt; Some t
-        | _ -&amp;gt; None
-
-let private notEndsCVCNotWXY trunk =
-    match trunk with
-    | EndsCVCNotWXY _ -&amp;gt; false
-    | _ -&amp;gt; true
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;Steps&lt;/h2&gt;
-
-&lt;p&gt;And finally, the steps that the words flow through and a function that composes them in the right order. The steps contains the specific conditions and word suffixes that must be matched for a change to be made.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let private step1a w =
-    match w with
-    | Ends ["sses"; "ss"] (t, s) -&amp;gt; t + "ss"
-    | Ends ["ies"] (t, s) -&amp;gt; t + "i"
-    | Ends ["s"] (t, s) -&amp;gt; t
-    | _ -&amp;gt; w
-
-let private step1b w =
-    let step1bX w =
-        match w with
-        | Ends ["at"] (t, s) -&amp;gt; t + "ate"
-        | Ends ["bl"] (t, s) -&amp;gt; t + "ble"
-        | Ends ["iz"] (t, s) -&amp;gt; t + "ize"
-        | EndsDoubleC (t, s) when not (s = "ll" || s = "ss" || s = "zz")  -&amp;gt; t + string (Seq.head s)
-        | EndsCVCNotWXY t when m t = 1  -&amp;gt; t + "e"
-        | _ -&amp;gt; w
-    match w with
-    | Ends ["eed"] (t, s) -&amp;gt; if m t &amp;gt; 0 then t + "ee" else t + s
-    | Ends ["ed"; "ing"] (t, s) when hasVowel t  -&amp;gt; step1bX t
-    | _ -&amp;gt; w
-
-let private step1c w =
-    match w with
-    | Ends ["y"] (t, s) when hasVowel t -&amp;gt; t + "i"
-    | _ -&amp;gt; w
-
-let private step2 w =
-    match w with
-    | Ends ["ational"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ate"
-    | Ends ["fulness"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ful"
-    | Ends ["iveness"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ive"
-    | Ends ["ization"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ize"
-    | Ends ["ousness"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ous"
-    | Ends ["biliti"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ble"
-    | Ends ["tional"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "tion"
-    | Ends ["alism"; "aliti"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "al"
-    | Ends ["ation"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ate"
-    | Ends ["entli"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ent"
-    | Ends ["iviti"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ive"
-    | Ends ["ousli"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ous"
-    | Ends ["abli"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "able"
-    | Ends ["alli"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "al"
-    | Ends ["anci"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ance"
-    | Ends ["ator"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ate"
-    | Ends ["enci"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ence"
-    | Ends ["izer"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ize"
-    | Ends ["eli"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "e"
-    | _ -&amp;gt; w
-
-let private step3 w =
-    match w with
-    | Ends ["alize"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "al"
-    | Ends ["ative"] (t, s) when m t &amp;gt; 0 -&amp;gt; t
-    | Ends ["icate"; "iciti"; "ical"] (t, s) when m t &amp;gt; 0 -&amp;gt; t + "ic"
-    | Ends ["ness"; "ful"] (t, s) when m t &amp;gt; 0 -&amp;gt; t
-    | _ -&amp;gt; w
-
-let private step4 w =
-    match w with
-    | Ends ["al"; "ance"; "ence"; "er"; "ic"; "able"; "ible"; "ant"; "ement"; "ment"; "ent"; "ou"; "ism"; "ate"; "iti"; "ous"; "ive"; "ize"] (t, s) when m t &amp;gt; 1 -&amp;gt; t
-    | Ends ["ion"] (t, s) when m t &amp;gt; 1 &amp;amp;&amp;amp; ends ["s"; "t"] t -&amp;gt; t
-    | _ -&amp;gt; w
-
-let private step5a w =
-    match w with
-    | Ends ["e"] (t, s) when m t &amp;gt; 1 -&amp;gt; t
-    | Ends ["e"] (t, s) when m t = 1 &amp;amp;&amp;amp; notEndsCVCNotWXY t -&amp;gt; t
-    | _ -&amp;gt; w
-
-let private step5b w =
-    match w with
-    | EndsDoubleC (t, s) when m w &amp;gt; 1 &amp;amp;&amp;amp; s = "ll" -&amp;gt; t + string (Seq.head s)
-    | _ -&amp;gt; w
-
-let stem word =
-    word |&amp;gt; step1a |&amp;gt; step1b |&amp;gt; step1c |&amp;gt; step2 |&amp;gt; step3 |&amp;gt; step4 |&amp;gt; step5a |&amp;gt; step5b
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;Tests&lt;/h2&gt;
-
-&lt;p&gt;I have tested the implementation successfully against the &lt;a href="http://snowball.tartarus.org/algorithms/porter/diffs.txt"&gt;list of vocabularies and their stemmed equivalents&lt;/a&gt; that is linked to from the original algorithm description page.&lt;/p&gt;
-
-&lt;h2&gt;Source Code&lt;/h2&gt;
-
-&lt;p&gt;The full solution can be downloaded from &lt;a href="https://github.com/andagr/PorterStemmer"&gt;github&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;In the end I'm pretty happy with the result, I've tried to make it as easy as possible to read and I hope I have reached that goal. I feel that F# has let me translate the description of the original algorithm very close to the code equivalent, much thanks to the amazing pattern matching that the language has to offer.&lt;/p&gt;
+&lt;p&gt;For a live example of where this blog generator is used, please see &lt;a href="http://includebrain.com"&gt;http://includebrain.com&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     <item>
-      <title>Helping Bitizens to Better Jobs in Tiny Tower Using F#</title>
-      <link>http://andagr.github.io/Firm/blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp</link>
-      <description>&lt;p&gt;&lt;img src="http://andagr.github.io/Firm/blog/post/helping-bitizens-to-better-jobs-in-tiny-tower-using-fsharp/img/650px-Banner.png" alt="Tiny Tower" /&gt;&lt;/p&gt;
-
-&lt;p&gt;From the &lt;a href="http://tinytower.wikia.com/wiki/Tiny_Tower_Wiki"&gt;Tiny Tower wiki&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Tiny Tower is a simulation game developed by &lt;a href="http://www.nimblebit.com/"&gt;NimbleBit&lt;/a&gt; and released in
-June 2011. It is available to download on Apple iOS devices (3.0 or
-later) and Android devices. The object of the game is to build and
-manage a large skyscraper. Each new floor the player builds is either
-a Commercial floor that hosts businesses and venues, or a Residential
-floor that Bitizens live in. Bitizens live and work in the player's
-Tower, paying rent every day and stocking the Commercial floors with
-items to sell. The player's goal is to turn a profit, build more
-floors, and manage their ever-growing tower.&lt;/p&gt;
+      <title>Wizard of Oz</title>
+      <link>http://andagr.github.io/Firm/blog/post/wizard-of-oz</link>
+      <description>&lt;blockquote&gt;
+  &lt;p&gt;This post has been generated from &lt;a href="http://www.fillerati.com/"&gt;http://www.fillerati.com/&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Like you and me, bitizens have job satisfaction. This is decided by two things, their skill in the job, and if it is their dream job. To be specific:&lt;/p&gt;
+&lt;p&gt;"Oil my neck, first," replied the Tin Woodman.  So she oiled it, and as it was quite badly rusted the Scarecrow took hold of the tin head and moved it gently from side to side until it worked freely, and then the man could turn it himself.&lt;/p&gt;
 
-&lt;h2&gt;Category / Color&lt;/h2&gt;
+&lt;p&gt;"Now oil the joints in my arms," he said.  And Dorothy oiled them and the Scarecrow bent them carefully until they were quite free from rust and as good as new.&lt;/p&gt;
 
-&lt;p&gt;Each business has a color that represents a category:&lt;/p&gt;
+&lt;p&gt;The Tin Woodman gave a sigh of satisfaction and lowered his axe, which he leaned against the tree.&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Green for food&lt;/li&gt;
-&lt;li&gt;Blue for service&lt;/li&gt;
-&lt;li&gt;Purple for retail&lt;/li&gt;
-&lt;li&gt;Yellow for recreation&lt;/li&gt;
-&lt;li&gt;Orange for creative&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;"This is a great comfort," he said.  "I have been holding that axe in the air ever since I rusted, and I'm glad to be able to put it down at last.  Now, if you will oil the joints of my legs, I shall be all right once more."&lt;/p&gt;
 
-&lt;p&gt;Each bitizen has one skill level, ranging from 0 - 9, in each color. The higher the skill level, the greater the discount will be for stocking items.&lt;/p&gt;
+&lt;p&gt;So they oiled his legs until he could move them freely; and he thanked them again and again for his release, for he seemed a very polite creature, and very grateful.&lt;/p&gt;
 
-&lt;h2&gt;Dream Job&lt;/h2&gt;
+&lt;p&gt;"I might have stood there always if you had not come along," he said; "so you have certainly saved my life.  How did you happen to be here?"&lt;/p&gt;
 
-&lt;p&gt;They also have one dream job that corresponds to a name of a business. When a bitizen is employed at her dream job she will be able to stock twice as many items as normal.&lt;/p&gt;
-
-&lt;h2&gt;Sorting by Job Satisfaction&lt;/h2&gt;
-
-&lt;p&gt;Higher job satisfaction means higher revenue, and using the above information we can create a tool that takes a list of bitizens and a list of businesses as input, and outputs a list of optimal employments (each business can employ three bitizens).&lt;/p&gt;
-
-&lt;p&gt;Let's use the following formula for scoring the employment value of a bitizen:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Skill * 10 + 10 - Avg(Rest of Skills)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;What this means is that the skill we are looking for is the one highest valued, and that specialists (high skill in question, low for others) are more valued than generalists (high in all skills). Here are some examples:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;  |
-  V
-0,9,0 =&amp;gt; 9*10 + 10-0 = 100
-1,9,1 =&amp;gt; 9*10 + 10-1 = 99
-8,9,1 =&amp;gt; 9*10 + 10-4.5 = 95,5
-8,9,8 =&amp;gt; 9*10 + 10-8 = 92
-9,9,9 =&amp;gt; 9*10 + 10-9 = 91
-0,8,0 =&amp;gt; 8*10 + 10-0 = 90
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The arrow denotes the skill column we are looking for in this specific example (the actual data will have of course have 5 skill values for each bitizen). As you can see, a bitizen with 9 in all skills is valued lower than one with 9 in only the desired skill. This is because if there are, say, 4 bitizens with a skill value of 9 for a specific job, then it's probably better to use up the specialist for this job and save the generalist for another job further down the list. The calculated value is then used to sort the list of bitizens based on which business that are looking for employees.&lt;/p&gt;
-
-&lt;h2&gt;Types&lt;/h2&gt;
-
-&lt;p&gt;Let's start with the F# types:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type Color =
-    | Green
-    | Blue
-    | Yellow
-    | Purple
-    | Orange
-    with
-        static member Parse color =
-            match color with
-            | "green" -&amp;gt; Color.Green
-            | "blue" -&amp;gt; Color.Blue
-            | "yellow" -&amp;gt; Color.Yellow
-            | "purple" -&amp;gt; Color.Purple
-            | "orange" -&amp;gt; Color.Orange
-            | _ -&amp;gt; raise(ArgumentException("Invalid color"))
-        override this.ToString() =
-            match this with
-            | Green -&amp;gt; "Green"
-            | Blue -&amp;gt; "Blue"
-            | Yellow -&amp;gt; "Yellow"
-            | Purple -&amp;gt; "Purple"
-            | Orange -&amp;gt; "Orange"
-
-type Skill(color: Color, value: int) =
-    do if value &amp;lt; 0 || value &amp;gt; 9 then raise (ArgumentException("Invalid skill value: " + sprintf "%i" value))
-    member this.Color = color
-    member this.Value = value
-
-type Bitizen(name: string, dreamJob: string, skills: Skill[]) =
-    do if skills.Length &amp;lt;&amp;gt; 5 then raise(ArgumentException("Invalid number of skills"))
-    let skillSum = skills |&amp;gt; Array.sumBy (fun s -&amp;gt; s.Value) |&amp;gt; decimal
-    member this.Name = name
-    member this.DreamJob = dreamJob
-    member this.SortValueFor (color: Color) =
-        let matchingSkill = decimal (skills |&amp;gt; (Array.find (fun s -&amp;gt; s.Color = color))).Value
-        let avgOtherskills = (skillSum - matchingSkill) / 4m
-        0m - (matchingSkill * 10m + 10m - avgOtherskills)
-    override this.ToString() =
-        name + ", " + dreamJob + ", [| " + String.Join("; ", skills |&amp;gt; Array.map (fun s -&amp;gt; string s.Color + ": " + string s.Value)) + " |]"
-
-type Job = 
-    { Name: string; Color: Color; }
-    with
-        override this.ToString() =
-            this.Name + ", " + string this.Color
-
-type Position = 
-    { Job: Job; Employee: Bitizen; }
-    with
-        override this.ToString() =
-            let jobStr = string this.Job
-            jobStr + String.replicate (25 - jobStr.Length) " " + string this.Employee
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;From this we can create a list of bitizens that each have a dream job and a helper method for getting her skill value based on a color. We can also create a list of jobs where each job is of a specific color (i.e. category).&lt;/p&gt;
-
-&lt;h2&gt;Filling vacant positions&lt;/h2&gt;
-
-&lt;p&gt;From one list of jobs and one of bitizens, assign jobs according to our earlier defined formula using the following function:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let fillPositions filter (jobs: Job list) (bitizens: Bitizen list) =
-    let fillOne (job: Job) (bitizens: Bitizen list) filter =
-        let matches, rest = List.partition (fun b -&amp;gt; filter job b) bitizens
-        let sortedMatches = matches |&amp;gt; List.sortBy (fun b -&amp;gt; b.SortValueFor job.Color)
-        match sortedMatches with
-        | [] -&amp;gt; None, bitizens
-        | head::tail  -&amp;gt; Some { Job = job; Employee = head }, tail@rest
-    let rec fillPositionsInner (jobs: Job list) (bitizens: Bitizen list) (positions: Position list) =
-        match jobs with
-        | [] -&amp;gt; positions, bitizens
-        | head::tail -&amp;gt; match fillOne head bitizens filter with
-                        | None, b -&amp;gt; fillPositionsInner tail b (positions)
-                        | Some p, b -&amp;gt; fillPositionsInner tail b (p::positions)
-    fillPositionsInner jobs bitizens []
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This function contains two other functions, &lt;code&gt;fillOne&lt;/code&gt; and &lt;code&gt;fillPositionsInner&lt;/code&gt;. The latter takes the first job and then uses &lt;code&gt;fillOne&lt;/code&gt; to find the most suitable bitizen. Apart from the jobs- and bitizen lists a filter argument is also required, more on this soon. &lt;code&gt;fillOne&lt;/code&gt; sorts the bitizen list according to "best for the requested skill", if the bitizen list is empty then a tuple &lt;code&gt;None * Bitizen list&lt;/code&gt; is returned, otherwise &lt;code&gt;Some(Position) * Bitizen list&lt;/code&gt;, where the second position holds the remaining unassigned bitizens, is returned.&lt;/p&gt;
-
-&lt;h2&gt;Program Start&lt;/h2&gt;
-
-&lt;p&gt;The program is started using this function:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[&amp;lt;EntryPoint&amp;gt;]
-let main argv =
-    let jobs = 
-        (new CsvProvider&amp;lt;"shops.csv"&amp;gt;()).Data
-        |&amp;gt; Seq.map (fun r -&amp;gt; seq { for i in 1..3 -&amp;gt; { Name = r.Name; Color = Color.Parse r.Color }})
-        |&amp;gt; Seq.collect (fun o -&amp;gt; seq { yield! o })
-        |&amp;gt; List.ofSeq
-
-    let bitizens = 
-        (new CsvProvider&amp;lt;"bitizens.csv"&amp;gt;()).Data
-        |&amp;gt; Seq.map
-            (fun r -&amp;gt;
-                Bitizen(r.Name, r.DreamJob, 
-                    [| 
-                        Skill(Color.Blue, r.Blue);
-                        Skill(Color.Green, r.Green);
-                        Skill(Color.Orange, r.Orange);
-                        Skill(Color.Purple, r.Purple);
-                        Skill(Color.Yellow, r.Yellow)
-                    |]))
-        |&amp;gt; List.ofSeq
-
-    let dreamPositions, bitizens = fillPositions (fun j b -&amp;gt; j.Name.ciCompare(b.DreamJob)) jobs bitizens
-    let normalPositions, bitizens = fillPositions (fun j b -&amp;gt; true) jobs bitizens
-
-    File.WriteAllLines("positions.txt", dreamPositions@normalPositions |&amp;gt; List.map (fun p -&amp;gt; string p))
-
-    0
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It reads two csv files using the &lt;a href="http://fsharp.github.io/FSharp.Data/library/CsvProvider.html"&gt;csv type provider&lt;/a&gt; and from this creates the types we need (oh, and type providers are the greatest thing ever). The available jobs list is created by making three jobs for each business. Next we need to fill positions by calling the &lt;code&gt;fillPositions&lt;/code&gt; function. This is done twice, first by using a filter function that matches dream jobs, making sure that these are assigned first, then once more for the remaining bitizens. One last note on this function, as you can see there is a string method &lt;code&gt;ciCompare&lt;/code&gt; in the dream positions filter function. This is simply an extension function on the string type which is defined as:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;type String with
-    member this.ciCompare other =
-        System.String.Equals(this, other, StringComparison.InvariantCultureIgnoreCase)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;Source&lt;/h2&gt;
-
-&lt;p&gt;You can find the full source as a Visual Studio solution on my github account: &lt;a href="https://github.com/andagr/SortTinyTowerWorkers"&gt;&lt;a href="https://github.com/andagr/SortTinyTowerWorkers"&gt;https://github.com/andagr/SortTinyTowerWorkers&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2&gt;Final Note&lt;/h2&gt;
-
-&lt;p&gt;I wrote this tool as an F# learning experience and I welcome any input on improvements on everything from the syntax to how this could be better modeled.&lt;/p&gt;
+&lt;p&gt;"We are on our way to the Emerald City to see the Great Oz," she answered, "and we stopped at your cottage to pass the night."&lt;/p&gt;
 </description>
     </item>
     <item>
-      <title>Learning F#</title>
-      <link>http://andagr.github.io/Firm/blog/post/learning-fsharp</link>
-      <description>&lt;p&gt;My main programming language when I was studying was, as for many other developers, Java. There were other languages too, but Java was the main tool for learning basic software development. Later in my work I came in contact with C#, and since then I have come to prefer it over Java due to its features and ability to quickly evolve, and the extensive .NET API.&lt;/p&gt;
+      <title>Everything Is Better With Bacon</title>
+      <link>http://andagr.github.io/Firm/blog/post/bacon-ipsum</link>
+      <description>&lt;blockquote&gt;
+  &lt;p&gt;This post has been generated from &lt;a href="http://baconipsum.com/"&gt;http://baconipsum.com/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;p&gt;The basic aspect of C# is the object orientation which works similarly as in Java, although there are &lt;a href="http://stackoverflow.com/questions/1882692/c-sharp-constructor-execution-order"&gt;subtle differences&lt;/a&gt;. However, what makes it a bit more exciting are other features such as dynamic, async/await and functional. The latter is something that has gained quite a lot of popularity, although &lt;a href="http://en.wikipedia.org/wiki/Functional_programming#History"&gt;it's not a new paradigm&lt;/a&gt;. It was this aspect of C#, and in practice LINQ, that got me curious about functional programming in general.&lt;/p&gt;
+&lt;p&gt;Bacon ipsum dolor amet brisket porchetta chicken capicola doner short loin turkey alcatra shank shankle prosciutto meatloaf biltong jowl filet mignon. Ribeye corned beef shoulder pancetta beef short ribs short loin frankfurter bresaola spare ribs meatloaf kielbasa hamburger ham. Leberkas bacon swine ham hock pork belly shoulder salami boudin pastrami cupim alcatra cow beef. Sausage drumstick ham hock, jowl kielbasa tongue tri-tip ground round beef. Turducken spare ribs tenderloin, brisket ball tip flank landjaeger capicola ribeye corned beef pork loin salami pancetta short ribs. Jerky frankfurter cow venison.&lt;/p&gt;
 
-&lt;p&gt;I decided to take a closer look at F#, partly because it's a member of the .NET platform but also because it seems to be developed from a pragmatic point of view. It is also very exciting that it is open source, seems to have a friendly community, and has support on several different platforms. Also noteworthy, at the time of writing F# has risen from position 45 to 16 in the &lt;a href="http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html"&gt;TIOBE index&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Pork filet mignon chuck andouille. Tri-tip shankle flank, picanha frankfurter fatback cow porchetta beef ribs prosciutto sausage turkey rump brisket strip steak. Shoulder kevin fatback, beef ball tip rump short ribs ham hock strip steak turducken pork loin pork chop brisket. Short loin tongue venison pork chop tri-tip drumstick meatball cow chuck. Pastrami t-bone pig, pork belly cow swine pancetta. Corned beef meatball drumstick chuck brisket, strip steak turducken chicken cupim pork loin picanha bacon jowl.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src="http://andagr.github.io/Firm/blog/post/learning-fsharp/img/fsharp128.png" alt="F# Logo" /&gt;&lt;/p&gt;
+&lt;p&gt;Tri-tip shank turkey t-bone cow. Tail spare ribs andouille ground round chuck landjaeger salami beef ribs cupim hamburger capicola turducken pancetta. Kevin t-bone tail, pork belly chuck porchetta leberkas. Meatloaf tenderloin ball tip jowl pastrami pancetta sirloin. Tongue chicken drumstick tenderloin, sausage filet mignon beef turkey. Strip steak doner porchetta salami jowl, landjaeger filet mignon meatball t-bone prosciutto shank ball tip shankle short ribs.&lt;/p&gt;
 
-&lt;p&gt;I am still very much a beginner, but in the spirit of recording things here are the resources I have used so far.&lt;/p&gt;
+&lt;p&gt;Meatball kielbasa pastrami, picanha pork chop chuck bresaola. Turkey chicken prosciutto salami, flank rump picanha shank pig hamburger shoulder cupim leberkas. Short ribs andouille jerky meatball boudin turducken. Shank short loin tri-tip bacon, kielbasa alcatra salami flank. Hamburger ham hock alcatra, fatback doner frankfurter chicken jowl turkey. Chuck rump turducken drumstick flank beef jerky leberkas tongue salami meatball pastrami shank.&lt;/p&gt;
 
-&lt;h2&gt;General&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="http://fsharp.org"&gt;fsharp.org&lt;/a&gt; - A hub for information about F# and the first place you should look.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.tryfsharp.org"&gt;tryfsharp.org&lt;/a&gt; - This site is amazing, it has a tutorial including an editor (with intellisense!) that works by using Silverlight to host the F# compiler in the browser.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://fsharpforfunandprofit.com"&gt;fsharpforfunandprofit.com&lt;/a&gt; - A general site for learning F# that contains a lot of information in the form of tutorials and posts.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://msdn.microsoft.com/en-us/library/dd233181.aspx"&gt;F# Language Reference&lt;/a&gt; - F# on MSDN.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://learnxinyminutes.com/docs/fsharp/"&gt;Learn X in Y minutes, where X = F#&lt;/a&gt; - To the point information about F# in the form of code examples.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;Blogs&lt;/h2&gt;
-
-&lt;p&gt;These are blogs, related to F#, that I try to read as often as possible, in no particular order.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="http://rachelree.se/"&gt;Rachel Reese&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.devjoy.com/"&gt;Devjoy&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://blogs.msdn.com/b/fsharpteam/"&gt;Visual Studio F# Team&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://tomasp.net/"&gt;Tomas Petricek&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://sergeytihon.wordpress.com/"&gt;Sergey Tihon&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://blog.mavnn.co.uk/"&gt;Michael Newton&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.kiteason.com/"&gt;Kit Eason&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://blogs.msdn.com/b/dsyme/"&gt;Don Syme&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;Books&lt;/h2&gt;
-
-&lt;p&gt;There are several &lt;a href="http://fsharp.org/about/learning.html"&gt;book suggestions on fsharp.org&lt;/a&gt;, and the one I got and am reading is &lt;a href="http://www2.imm.dtu.dk/~mire/FSharpBook/"&gt;Functional Programming using F#&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src="http://andagr.github.io/Firm/blog/post/learning-fsharp/img/9781107684065_200_functional-programming-using-f_haftad.jpg" alt="Functional Programming using F#" /&gt;&lt;/p&gt;
-
-&lt;h2&gt;Videos&lt;/h2&gt;
-
-&lt;p&gt;When I was at &lt;a href="http://oredev.org"&gt;Öredev&lt;/a&gt; I attended a couple of sessions on F#.&lt;/p&gt;
-
-&lt;h3&gt;F# for C# developers by Phil Trelford&lt;/h3&gt;
-
-&lt;iframe src="//player.vimeo.com/video/78908217" width="500" height="300" webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
-
-&lt;h3&gt;Discovering Type Providers in F# 3.0 by Rachel Reese&lt;/h3&gt;
-
-&lt;iframe src="//player.vimeo.com/video/79402548" width="500" height="300" webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
-
-&lt;h2&gt;Podcasts&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href="http://www.dotnetrocks.com/"&gt;The .NET Rocks&lt;/a&gt; show has several shows where they talk about F#.&lt;/p&gt;
-
-&lt;h2&gt;Practicing&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href="http://projecteuler.net/"&gt;Project Euler&lt;/a&gt; is a good resource to use for practicing problem solving using programming. Other than that I have used F# to solve a problem that interested me, and there will be a separate blog post about it later. I will keep using F# wherever it feels like a good fit, because for me personally trying things out is what works best when learning something.&lt;/p&gt;
-</description>
-    </item>
-    <item>
-      <title>Configuring Log4Net programmatically</title>
-      <link>http://andagr.github.io/Firm/blog/post/configuring-log4net-programmatically</link>
-      <description>&lt;p&gt;&lt;a href="http://logging.apache.org/log4net/"&gt;Log4Net&lt;/a&gt; is a widely used logging framework by Apache, who ported it from log4j, also made by Apache. It can be configured for a number of different things, such as where to output the logs and how to format the log text.&lt;/p&gt;
-
-&lt;p&gt;Using Log4Net is quite easy once the configuration has been completed, and here is a common way of doing just that (using a file appender as an example).&lt;/p&gt;
-
-&lt;p&gt;Create a file called log4net.config and add the following content:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;log4net&amp;gt;
-    &amp;lt;appender name="FileAppender" type="log4net.Appender.FileAppender"&amp;gt;
-        &amp;lt;file value="log.txt" /&amp;gt;
-        &amp;lt;encoding value="utf-8" /&amp;gt;
-        &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt;
-            &amp;lt;conversionPattern value="%date %-5level %logger - %message%newline" /&amp;gt;
-        &amp;lt;/layout&amp;gt;
-    &amp;lt;/appender&amp;gt;
-
-    &amp;lt;root&amp;gt;
-        &amp;lt;level value="DEBUG" /&amp;gt;
-        &amp;lt;appender-ref ref="FileAppender" /&amp;gt;
-    &amp;lt;/root&amp;gt;
-&amp;lt;/log4net&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then add the following line in the startup process of your application:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;XmlConfigurator.Configure( "log4net.config" );
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You may also place the xml configuration in the App.config and then instead of the above method call, add the following section to the configuration element:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;configSections&amp;gt;
-  &amp;lt;section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" /&amp;gt;
-&amp;lt;/configSections&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Usually this is easy enough, however there might be cases where one can not, or simply do not want to, configure the logging in an external file, which is a perfectly understandable requirement. For these situations the following approach can be used.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Logger
-{
-    public static void ConfigureFileAppender( string logFile )
-    {
-        var fileAppender = GetFileAppender( logFile );
-        BasicConfigurator.Configure( fileAppender );
-        ( ( Hierarchy ) LogManager.GetRepository() ).Root.Level = Level.Debug;
-    }
-
-    private static IAppender GetFileAppender( string logFile )
-    {
-        var layout = new PatternLayout( "%date %-5level %logger - %message%newline" );
-        layout.ActivateOptions(); // According to the docs this must be called as soon as any properties have been changed.
-
-        var appender = new FileAppender
-            {
-                File = logFile,
-                Encoding = Encoding.UTF8,
-                Threshold = Level.Debug,
-                Layout = layout
-            };
-
-        appender.ActivateOptions();
-
-        return appender;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Simply add the above class, and then use it like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Program
-{
-    private static readonly ILog Log = LogManager.GetLogger( typeof ( Program ) );
-
-    private static void Main( string[] args )
-    {
-        Logger.ConfigureFileAppender( "log.txt" ); // This only has to be called once.
-        Log.Info( "This is not a log line." );
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;That's it, it's easy when you know it. I hope someone finds it useful.&lt;/p&gt;
-</description>
-    </item>
-    <item>
-      <title>Hello</title>
-      <link>http://andagr.github.io/Firm/blog/post/hello</link>
-      <description>&lt;p&gt;My name is Andreas Ågren and I'm a developer from Malmö in south Sweden, where I live with my wife and son.
-I work at &lt;a href="http://www.apptus.com"&gt;Apptus Technologies AB&lt;/a&gt; with integration. My day-to-day technologies are C#, SQL Server, ASP.NET, Java and Javascript.
-I am very passionate about software development and I love learning, reading about and practicing it.&lt;/p&gt;
-
-&lt;p&gt;The name Include Brain originates from a joke between me and my brother sometime during early 2000. At the time I studied C++,
-and if you're a developer you might know that files are imported with e.g. &lt;code&gt;#include &amp;lt;foo.h&amp;gt;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;We were at &lt;a href="http://www.dreamhack.se/"&gt;Dreamhack&lt;/a&gt; and, possibly after I got my ass handed to me in Quake 3 by a twelve year old, I suggested that
-some people really should &lt;code&gt;#include &amp;lt;brain.h&amp;gt;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Being perfectly reasonable, my brother printed this on a cap:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src="http://andagr.github.io/Firm/blog/post/hello/img/include-brain-cap.jpg" alt="Include brain cap" /&gt;&lt;/p&gt;
-
-&lt;p&gt;If you would like to get in touch with me, there are a number of options on the &lt;a href="http://andagr.github.io/Firm/blog/about"&gt;About&lt;/a&gt; page.&lt;/p&gt;
-
-&lt;p&gt;I hope you will enjoy my writings!&lt;/p&gt;
+&lt;p&gt;Corned beef frankfurter ball tip kielbasa spare ribs tongue sirloin shank ham. Bacon venison kevin meatloaf ribeye pork loin beef ribs corned beef flank shank ham hock short ribs tail rump. Meatball sirloin jerky doner. Short ribs kielbasa corned beef, ham hock strip steak drumstick meatball alcatra pig tongue frankfurter bacon pork loin. Sirloin spare ribs ball tip pig, shoulder beef ribs porchetta turkey fatback flank salami shank cupim kevin venison. Drumstick shankle pork belly jowl landjaeger sausage rump pastrami t-bone corned beef ball tip.&lt;/p&gt;
 </description>
     </item>
   </channel>
