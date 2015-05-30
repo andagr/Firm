@@ -5,7 +5,7 @@ Firm is a blog-aware, static site generator written in [F#](http://fsharp.org).
 It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archive. Templates are written in [Razor](https://github.com/Antaris/RazorEngine). Posts and pages are written in [Markdown](http://daringfireball.net/projects/markdown/).
 
 #Getting started
-1. Fork the project at https://github.com/andagr/Firm.
+1. Fork the project at [https://github.com/andagr/Firm](https://github.com/andagr/Firm).
 2. Clone it to a local directory.
 3. Create the folders `data\templates\razor` and add the following template files:
 
