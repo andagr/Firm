@@ -11,10 +11,9 @@ open FSharp.Markdown
 
 module Output =
     let copyResource (resource: ResourceFile) =
-        if not (File.Exists(resource.File.Output)) then
-            printfn "Copying resource %s to %s" resource.File.Input resource.File.Output
-            Directory.CreateDirectory(Path.GetDirectoryName(resource.File.Output)) |> ignore
-            File.Copy(resource.File.Input, resource.File.Output)
+        printfn "Copying resource %s to %s" resource.File.Input resource.File.Output
+        Directory.CreateDirectory(Path.GetDirectoryName(resource.File.Output)) |> ignore
+        File.Copy(resource.File.Input, resource.File.Output, true)
 
     module Xml =
         let element name (children: XObject list) =
@@ -89,11 +88,10 @@ module Output =
             |> List.iter compileTemplate
 
         let writePost (file: PostFile, model: SinglePostModel) =
-            if not (File.Exists(file.File.Output)) then
-                printfn "Compiling and writing post %s" file.File.Output
-                Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
-                let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<SinglePostModel>, model)
-                File.WriteAllText(file.File.Output, result)
+            printfn "Compiling and writing post %s" file.File.Output
+            Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
+            let result = Engine.Razor.RunCompile(tplKeys.Post, typeof<SinglePostModel>, model)
+            File.WriteAllText(file.File.Output, result)
 
         let writeIndex (model: AllPostsModel) file =
             printfn "Compiling and writing index %s" file
@@ -108,8 +106,7 @@ module Output =
             File.WriteAllText(file, result)
 
         let writePage (file: PageFile, model: PageModel) =
-            if not (File.Exists(file.File.Output)) then
-                printfn "Compiling and writing page %s" file.File.Output
-                Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
-                let result = Engine.Razor.RunCompile(tplKeys.Page, typeof<PageModel>, model)
-                File.WriteAllText(file.File.Output, result)
+            printfn "Compiling and writing page %s" file.File.Output
+            Directory.CreateDirectory(Path.GetDirectoryName(file.File.Output)) |> ignore
+            let result = Engine.Razor.RunCompile(tplKeys.Page, typeof<PageModel>, model)
+            File.WriteAllText(file.File.Output, result)
