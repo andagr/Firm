@@ -38,7 +38,7 @@ There are quite a few manual steps right now, the plan is to automate this bit b
 5. Open a console in the root directory of Firm and type: `firm generate`. Dependencies should now be downloaded, project built and web site generated into the folder `output`.
 6. In the console, run `firm preview`, verify that the site looks good and then hit `[Enter]` in the console to exit preview mode.
 7. Open `config.json` again and change `baseUrl` to the root url of your site, if it's on GitHub Pages (see publishing below) then it's most likely http://(user).github.io/Firm.
-8. Open a console in the root directory of Firm and run `firm regenerate`. Please note that it's `regenerate`, not `generate`, Firm will only generate new content for the latter command, and we want to generate everything again to make sure that url's are updated correctly.
+8. Open a console in the root directory of Firm and run `firm generate`.
 9. **Don't forget to add, commit and push the changes to your repository.**
 	* The `data` folder is ignored by default, you can open `.gitignore` and remove the entry, it's at the very bottom of the file.
 	* The `output` folder is also ignored by default, you can either remove the entry or follow the instructions for publishing to GitHub Pages below.
@@ -73,10 +73,10 @@ There are [many different hosts for static websites](https://www.google.com/sear
 
 1. Add or edit a post or page.
 2. Change config.json:baseUrl to http://localhost:8080.
-3. Run `firm regenerate` to generate your site in the `output` folder.
+3. Run `firm generate` to generate your site in the `output` folder.
 4. Run `firm preview` and verify that it looks ok.
 5. Change back config.json.
-6. Run `firm regenerate` again.
+6. Run `firm generate` again.
 6. Add, commit and push changes on both your `master` and `gh-pages` branches.
 
 You're done! All you have to do from now on is create content, verify that it looks ok and then push it to GitHub Pages.
