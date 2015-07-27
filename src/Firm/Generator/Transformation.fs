@@ -24,8 +24,12 @@ module Transformation =
             postFiles
             |> List.map (fun pf ->
                 let meta = pf.Meta
-                let md = Literate.ParseMarkdownFile(pf.File.Input) |> Urls.Literate.withAbsUrls config.BaseUrl
-                let doc = Literate.WriteHtml(md) 
+                let ld = 
+                    match pf.Type with
+                    | Md -> Literate.ParseMarkdownFile(pf.File.Input)
+                    | Fsx -> Literate.ParseScriptFile(pf.File.Input)
+                    |> Urls.Literate.withAbsUrls config.BaseUrl
+                let doc = Literate.WriteHtml(ld) 
                 pf, PostModel(pf.Name, meta.Title, meta.Date, meta.Tags, doc))
             |> List.sortBy (fun (_, pm) -> pm.Date)
             |> List.rev

@@ -9,13 +9,19 @@ module Files =
         { Input: string
           Output: string }
 
+    type InputType =
+        | Md
+        | Fsx
+
     type PostFile =
         { File: FileData
           Meta: MetaData
-          Name: string }
+          Name: string
+          Type: InputType }
 
     type PageFile =
-        { File: FileData }
+        { File: FileData
+          Type: InputType }
 
     type ResourceFile = 
         { File: FileData }
@@ -52,14 +58,22 @@ module Files =
 
     let private (|Content|Resource|) (f:string) =
         match (Path.GetExtension(f.ToLowerInvariant())) with
-        | ".md" -> Content
+        | ".md" -> Content(Md)
+        | ".fsx" -> Content(Fsx)
         | _ -> Resource
 
     let private input fileExists (id, od) f =
         let meta = Path.GetDirectoryName(f) @+ "meta.json"
         match f with
-        | Content when fileExists meta -> PostFile({File = {Input = f; Output = outFile (id, od) f @. ".html"}; Meta = MetaData.fromFile meta; Name = postName f})
-        | Content -> PageFile({PageFile.File = {Input = f; Output = outFile (id, od) f @. ".html"}})
+        | Content itype when fileExists meta ->
+            PostFile(
+                { File = { Input = f; Output = outFile (id, od) f @. ".html" }
+                  Meta = MetaData.fromFile meta; Name = postName f
+                  Type = itype })
+        | Content itype -> 
+            PageFile(
+                { PageFile.File = {Input = f; Output = outFile (id, od) f @. ".html"}
+                  Type = itype })
         | Resource -> ResourceFile({ResourceFile.File = {Input = f; Output = outFile (id, od) f}})
 
     let private unzip (posts, pages, resources) input =
