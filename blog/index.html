@@ -53,32 +53,94 @@
 
 <div class="post">
     
-    <h1 class="post-title"><a href='http://andagr.github.io/Firm/blog/post/welcome-to-firm/'>Welcome To Firm</a></h1>
-    <small>2015-05-29 21:28:00</small>
-    <div class="post-content"><h1>Hello</h1>
+    <h1 class="post-title"><a href='http://andagr.github.io/Firm/blog/post/literate-programming/'>Literate programming</a></h1>
+    <small>2015-07-27 21:00:00</small>
+    <div class="post-content"><h2>What is it?</h2>
 
-<p>Firm is a blog-aware, static site generator written in <a href="http://fsharp.org">F#</a>.</p>
+<p>You can write posts in Firm in <a href="http://tpetricek.github.io/FSharp.Formatting/literate.html">literate programming style</a>.
+What that means is that instead of writing documents in markdown text and specifically format the parts that contain code,
+you turn it around and make code your main content and embed text as comments.
+The major upside of this is that the source of your post or page is an fsharp script file (.fsx) that can be run in e.g.
+Visual Studio.</p>
 
-<p>It supports stand-alone pages, blog posts, rss, tags (tag cloud) and post archive. Templates are written in <a href="https://github.com/Antaris/RazorEngine">Razor</a>. Posts and pages are written in <a href="http://daringfireball.net/projects/markdown/">Markdown</a>.</p>
+<h2>Made possible by</h2>
 
-<h1>Getting started</h1>
+<p>The fsharp script file is fed to <a href="http://tpetricek.github.io/FSharp.Formatting">FSharp.Formatting</a>,
+which does all the heavy lifting.</p>
 
-<p>You can find more information on how to get started with using Firm at the <a href="http://github.com/andagr/Firm">GitHub repository</a>.</p>
+<h2>Example</h2>
 
-<h1>Contributions</h1>
+<p>Here are some code snippets copied from <a href="http://fssnip.net">http://fssnip.net</a> with the solution the first
+<a href="https://projecteuler.net/">Project Euler</a> problem (find the sum of all multiples of 3 or 5 below 1000).</p>
 
-<p>Pull requests are welcome! Please head over to <a href="http://github.com/andagr/Firm">http://github.com/andagr/Firm</a></p>
+<p>First the range.</p>
 
-<h1>Example</h1>
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">range</span> <span class="o">=</span> [<span class="n">0..</span><span class="n">999</span>]
+</pre>
+</td>
+</tr>
+</table>
 
-<p>For a live example of where this blog generator is used, please see <a href="http://includebrain.com">http://includebrain.com</a></p>
+<p>Then the predicate that checks for multiples of 3 or 5.</p>
 
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="f">condition</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">x</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="i">x</span> <span class="o">%</span> <span class="n">3</span> <span class="o">=</span> <span class="n">0</span> <span class="o">||</span> <span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="i">x</span> <span class="o">%</span> <span class="n">5</span> <span class="o">=</span> <span class="n">0</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>And finally the function that runs the above declared predicate on the range and sums it up using built in library
+functions.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span onmouseout="hideTip(event, 'fs1', 6)" onmouseover="showTip(event, 'fs1', 6)" class="i">range</span> 
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs4', 7)" onmouseover="showTip(event, 'fs4', 7)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs5', 8)" onmouseover="showTip(event, 'fs5', 8)" class="f">filter</span> <span onmouseout="hideTip(event, 'fs2', 9)" onmouseover="showTip(event, 'fs2', 9)" class="f">condition</span> 
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs4', 10)" onmouseover="showTip(event, 'fs4', 10)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 11)" onmouseover="showTip(event, 'fs6', 11)" class="f">fold</span> (<span class="o">+</span>) <span class="n">0</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<h2>More examples</h2>
+
+<p>You can find an example that covers pretty much all features on the
+<a href="http://tpetricek.github.io/FSharp.Formatting/sidescript.html">FSharp.Formatting documentation site</a>.</p>
+
+<p>You can check
+<a href="https://github.com/andagr/Firm/tree/data/input/blog/post/literate-programming/index.fsx">the source of this blog post</a>
+to see the actual script.</p>
+
+<div class="tip" id="fs1">val range : int list<br /><br />Full name: Index.range</div>
+<div class="tip" id="fs2">val condition : x:int -&gt; bool<br /><br />Full name: Index.condition</div>
+<div class="tip" id="fs3">val x : int</div>
+<div class="tip" id="fs4">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs5">val filter : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.filter</div>
+<div class="tip" id="fs6">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
 
 </div>
 </div>
             </div>
             <div id="right-panel" class="col-md-4">
                 <div id="tag-cloud">
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=literate'>literate</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=programming'>programming</a>
+                        <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=f%23'>f#</a>
                         <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=blog'>blog</a>
                         <a class="tag tag-unselected" data-postcount="2" href='http://andagr.github.io/Firm/blog/archive?tag=lorem'>lorem</a>
                         <a class="tag tag-unselected" data-postcount="1" href='http://andagr.github.io/Firm/blog/archive?tag=wizard'>wizard</a>
@@ -86,6 +148,11 @@
                 </div>
                 <div id="latest-posts">
                     <h3>Latest posts</h3>
+                        <h4>
+                            <a href='http://andagr.github.io/Firm/blog/post/literate-programming/'>Literate programming</a>
+                            <br/>
+                            <small>2015-07-27 21:00:00</small>
+                        </h4>
                         <h4>
                             <a href='http://andagr.github.io/Firm/blog/post/welcome-to-firm/'>Welcome To Firm</a>
                             <br/>

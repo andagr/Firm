@@ -50,22 +50,85 @@
 
 
 <div class="post">
-    <h1 class="post-title">Everything Is Better With Bacon</h1>
-    <small>2015-05-29 20:20:00</small>
-    <div class="post-content"><blockquote>
-  <p>This post has been generated from <a href="http://baconipsum.com/">http://baconipsum.com/</a></p>
-</blockquote>
+    <h1 class="post-title">Literate programming</h1>
+    <small>2015-07-27 21:00:00</small>
+    <div class="post-content"><h2>What is it?</h2>
 
-<p>Bacon ipsum dolor amet brisket porchetta chicken capicola doner short loin turkey alcatra shank shankle prosciutto meatloaf biltong jowl filet mignon. Ribeye corned beef shoulder pancetta beef short ribs short loin frankfurter bresaola spare ribs meatloaf kielbasa hamburger ham. Leberkas bacon swine ham hock pork belly shoulder salami boudin pastrami cupim alcatra cow beef. Sausage drumstick ham hock, jowl kielbasa tongue tri-tip ground round beef. Turducken spare ribs tenderloin, brisket ball tip flank landjaeger capicola ribeye corned beef pork loin salami pancetta short ribs. Jerky frankfurter cow venison.</p>
+<p>You can write posts in Firm in <a href="http://tpetricek.github.io/FSharp.Formatting/literate.html">literate programming style</a>.
+What that means is that instead of writing documents in markdown text and specifically format the parts that contain code,
+you turn it around and make code your main content and embed text as comments.
+The major upside of this is that the source of your post or page is an fsharp script file (.fsx) that can be run in e.g.
+Visual Studio.</p>
 
-<p>Pork filet mignon chuck andouille. Tri-tip shankle flank, picanha frankfurter fatback cow porchetta beef ribs prosciutto sausage turkey rump brisket strip steak. Shoulder kevin fatback, beef ball tip rump short ribs ham hock strip steak turducken pork loin pork chop brisket. Short loin tongue venison pork chop tri-tip drumstick meatball cow chuck. Pastrami t-bone pig, pork belly cow swine pancetta. Corned beef meatball drumstick chuck brisket, strip steak turducken chicken cupim pork loin picanha bacon jowl.</p>
+<h2>Made possible by</h2>
 
-<p>Tri-tip shank turkey t-bone cow. Tail spare ribs andouille ground round chuck landjaeger salami beef ribs cupim hamburger capicola turducken pancetta. Kevin t-bone tail, pork belly chuck porchetta leberkas. Meatloaf tenderloin ball tip jowl pastrami pancetta sirloin. Tongue chicken drumstick tenderloin, sausage filet mignon beef turkey. Strip steak doner porchetta salami jowl, landjaeger filet mignon meatball t-bone prosciutto shank ball tip shankle short ribs.</p>
+<p>The fsharp script file is fed to <a href="http://tpetricek.github.io/FSharp.Formatting">FSharp.Formatting</a>,
+which does all the heavy lifting.</p>
 
-<p>Meatball kielbasa pastrami, picanha pork chop chuck bresaola. Turkey chicken prosciutto salami, flank rump picanha shank pig hamburger shoulder cupim leberkas. Short ribs andouille jerky meatball boudin turducken. Shank short loin tri-tip bacon, kielbasa alcatra salami flank. Hamburger ham hock alcatra, fatback doner frankfurter chicken jowl turkey. Chuck rump turducken drumstick flank beef jerky leberkas tongue salami meatball pastrami shank.</p>
+<h2>Example</h2>
 
-<p>Corned beef frankfurter ball tip kielbasa spare ribs tongue sirloin shank ham. Bacon venison kevin meatloaf ribeye pork loin beef ribs corned beef flank shank ham hock short ribs tail rump. Meatball sirloin jerky doner. Short ribs kielbasa corned beef, ham hock strip steak drumstick meatball alcatra pig tongue frankfurter bacon pork loin. Sirloin spare ribs ball tip pig, shoulder beef ribs porchetta turkey fatback flank salami shank cupim kevin venison. Drumstick shankle pork belly jowl landjaeger sausage rump pastrami t-bone corned beef ball tip.</p>
+<p>Here are some code snippets copied from <a href="http://fssnip.net">http://fssnip.net</a> with the solution the first
+<a href="https://projecteuler.net/">Project Euler</a> problem (find the sum of all multiples of 3 or 5 below 1000).</p>
 
+<p>First the range.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">range</span> <span class="o">=</span> [<span class="n">0..</span><span class="n">999</span>]
+</pre>
+</td>
+</tr>
+</table>
+
+<p>Then the predicate that checks for multiples of 3 or 5.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="f">condition</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">x</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="i">x</span> <span class="o">%</span> <span class="n">3</span> <span class="o">=</span> <span class="n">0</span> <span class="o">||</span> <span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="i">x</span> <span class="o">%</span> <span class="n">5</span> <span class="o">=</span> <span class="n">0</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<p>And finally the function that runs the above declared predicate on the range and sums it up using built in library
+functions.</p>
+
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">1: </span>
+<span class="l">2: </span>
+<span class="l">3: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span onmouseout="hideTip(event, 'fs1', 6)" onmouseover="showTip(event, 'fs1', 6)" class="i">range</span> 
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs4', 7)" onmouseover="showTip(event, 'fs4', 7)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs5', 8)" onmouseover="showTip(event, 'fs5', 8)" class="f">filter</span> <span onmouseout="hideTip(event, 'fs2', 9)" onmouseover="showTip(event, 'fs2', 9)" class="f">condition</span> 
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs4', 10)" onmouseover="showTip(event, 'fs4', 10)" class="t">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 11)" onmouseover="showTip(event, 'fs6', 11)" class="f">fold</span> (<span class="o">+</span>) <span class="n">0</span>
+</pre>
+</td>
+</tr>
+</table>
+
+<h2>More examples</h2>
+
+<p>You can find an example that covers pretty much all features on the
+<a href="http://tpetricek.github.io/FSharp.Formatting/sidescript.html">FSharp.Formatting documentation site</a>.</p>
+
+<p>You can check
+<a href="https://github.com/andagr/Firm/tree/data/input/blog/post/literate-programming/index.fsx">the source of this blog post</a>
+to see the actual script.</p>
+
+<div class="tip" id="fs1">val range : int list<br /><br />Full name: Index.range</div>
+<div class="tip" id="fs2">val condition : x:int -&gt; bool<br /><br />Full name: Index.condition</div>
+<div class="tip" id="fs3">val x : int</div>
+<div class="tip" id="fs4">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs5">val filter : predicate:(&#39;T -&gt; bool) -&gt; list:&#39;T list -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.filter</div>
+<div class="tip" id="fs6">val fold : folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; state:&#39;State -&gt; list:&#39;T list -&gt; &#39;State<br /><br />Full name: Microsoft.FSharp.Collections.List.fold</div>
 
 </div>
 </div>

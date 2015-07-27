@@ -9,6 +9,60 @@
     <managingEditor>bandagr@gmail.com</managingEditor>
     <webMaster>bandagr@gmail.com</webMaster>
     <item>
+      <title>Literate programming</title>
+      <link>http://andagr.github.io/Firm/blog/post/literate-programming</link>
+      <description>&lt;p&gt;(&lt;em&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2&gt;What is it?&lt;/h2&gt;
+
+&lt;p&gt;You can write posts in Firm in &lt;a href="http://tpetricek.github.io/FSharp.Formatting/literate.html"&gt;literate programming style&lt;/a&gt;.
+What that means is that instead of writing documents in markdown text and specifically format the parts that contain code,
+you turn it around and make code your main content and embed text as comments.
+The major upside of this is that the source of your post or page is an fsharp script file (.fsx) that can be run in e.g.
+Visual Studio.&lt;/p&gt;
+
+&lt;h2&gt;Made possible by&lt;/h2&gt;
+
+&lt;p&gt;The fsharp script file is fed to &lt;a href="http://tpetricek.github.io/FSharp.Formatting"&gt;FSharp.Formatting&lt;/a&gt;,
+which does all the heavy lifting.&lt;/p&gt;
+
+&lt;h2&gt;Example&lt;/h2&gt;
+
+&lt;p&gt;Here are some code snippets copied from &lt;a href="http://fssnip.net"&gt;http://fssnip.net&lt;/a&gt; with the solution the first
+&lt;a href="https://projecteuler.net/"&gt;Project Euler&lt;/a&gt; problem (find the sum of all multiples of 3 or 5 below 1000).&lt;/p&gt;
+
+&lt;p&gt;First the range.
+*)
+let range = [0..999]&lt;/p&gt;
+
+&lt;p&gt;(&lt;em&gt;&lt;/em&gt;
+Then the predicate that checks for multiples of 3 or 5.
+*)
+let condition x = x % 3 = 0 || x % 5 = 0&lt;/p&gt;
+
+&lt;p&gt;(&lt;em&gt;&lt;/em&gt;
+And finally the function that runs the above declared predicate on the range and sums it up using built in library
+functions.
+*)&lt;/p&gt;
+
+&lt;p&gt;range 
+|&amp;gt; List.filter condition 
+|&amp;gt; List.fold (+) 0&lt;/p&gt;
+
+&lt;p&gt;(&lt;em&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2&gt;More examples&lt;/h2&gt;
+
+&lt;p&gt;You can find an example that covers pretty much all features on the
+&lt;a href="http://tpetricek.github.io/FSharp.Formatting/sidescript.html"&gt;FSharp.Formatting documentation site&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can check
+&lt;a href="https://github.com/andagr/Firm/tree/data/input/blog/post/literate-programming/index.fsx"&gt;the source of this blog post&lt;/a&gt;
+to see the actual script.
+*)&lt;/p&gt;
+</description>
+    </item>
+    <item>
       <title>Welcome To Firm</title>
       <link>http://andagr.github.io/Firm/blog/post/welcome-to-firm</link>
       <description>&lt;h1&gt;Hello&lt;/h1&gt;
