@@ -23,7 +23,7 @@ NUGET
       Microsoft.Owin.FileSystems (>= 3.0.1)
       Owin (>= 1.0)
     Owin (1.0)
-    RazorEngine (3.5.3)
+    RazorEngine (3.6.6)
       Microsoft.AspNet.Razor (>= 3.0.0) - >= net45
       Microsoft.AspNet.Razor (2.0.30506.0) - >= net40 < net45
     Zlib.Portable (1.10.0)
