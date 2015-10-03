@@ -3,7 +3,7 @@ NUGET
   specs:
     FAKE (3.15.0)
     FSharp.Compiler.Service (0.0.89)
-    FSharp.Data (2.1.1)
+    FSharp.Data (2.2.5)
       Zlib.Portable (>= 1.10.0)
     FSharp.Formatting (2.9.6)
       FSharp.Compiler.Service (>= 0.0.87)
