@@ -1,8 +1,8 @@
 source https://nuget.org/api/v2
 
-nuget FSharp.Data ~> 2.1.1
+nuget FSharp.Data ~> 2.2.5
 nuget FSharp.Formatting ~> 2.9.6
-nuget RazorEngine ~> 3.5.3
+nuget RazorEngine ~> 3.6.6
 nuget Fake ~> 3.15.0
 nuget Microsoft.Owin.Hosting ~> 3.0.0
 nuget Microsoft.Owin.FileSystems ~> 3.0.0
