@@ -73,10 +73,7 @@ let IsPostDirectoryExist (args:string[]) =
 
 let IsValidateBlogCommand (args:string[]) =
   System.Console.WriteLine "Validating the blog command..."
-  if IsDirectoryArgExist args && IsPostDirectoryExist args && IsDuplicateBlogPost args then
-    true
-  else
-    false
+  IsDirectoryArgExist args && IsPostDirectoryExist args && IsDuplicateBlogPost args
 
 let CreateBlogMarkdownFile path title =
   System.Console.WriteLine "Creating the blog post markdown file..."
