@@ -77,14 +77,18 @@ let IsValidateBlogCommand (args:string[]) =
 
 let CreateBlogMarkdownFile path title =
   System.Console.WriteLine "Creating the blog post markdown file..."
-  use markdownFile = File.Create (path + "/index.md")
+  let markdownFile = File.Create (path + "/index.md")
+  markdownFile.Close()
+  markdownFile.Dispose()
   System.Console.WriteLine "Writing title to blog post markdown file..."
   File.WriteAllText((path + "/index.md"),
     (sprintf @"%s" ("> " + title)))
 
 let CreateJsonMetaFile path title =
   System.Console.WriteLine "Creating the blog post json meta file..."
-  use jsonMetaFile = File.Create (path + "/meta.json")
+  let jsonMetaFile = File.Create (path + "/meta.json")
+  jsonMetaFile.Close()
+  jsonMetaFile.Dispose()
   System.Console.WriteLine "Writing meta data to blog post json meta file..."
   File.WriteAllText((path + "/meta.json"),
     (sprintf
